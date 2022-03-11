@@ -1,0 +1,12 @@
+[submodule "deps/spdlog"]
+	path = deps/spdlog
+	url = https://github.com/gabime/spdlog
+	branch = v1.x
+[submodule "deps/tclap"]
+	path = deps/tclap
+	url = https://github.com/mirror/tclap
+	branch = master
+[submodule "deps/sfml"]
+	path = deps/sfml
+	url = https://github.com/SFML/SFML
+	branch = 2.5.x

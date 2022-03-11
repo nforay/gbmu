@@ -1,0 +1,23 @@
+##### Global
+build/
+.vscode/
+.gdb_history
+massif.out.*
+
+##### Precompiled Headers
+*.gch   binary
+*.pch   binary
+
+##### Compiled Object files
+*.o     binary
+*.obj   binary
+
+##### Compiled Dynamic libraries
+*.so    binary
+*.dylib binary
+
+##### Compiled Static libraries
+*.a     binary
+
+##### Executables
+*.out

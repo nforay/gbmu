@@ -1,0 +1,55 @@
+* text=auto
+
+###### Git
+.gitattributes  text
+.gitignore      text
+.gitconfig      text
+.gitmodules     text
+
+##### Linux
+*.sh text eol=lf
+
+##### Global
+# Documents
+AUTHORS text
+CHANGELOG text
+CHANGES text
+CONTRIBUTING text
+COPYING text
+copyright text
+*COPYRIGHT* text
+INSTALL text
+license text
+LICENSE text
+NEWS text
+readme text
+*README* text
+TODO text
+
+##### Precompiled Headers
+*.gch   binary
+*.pch   binary
+
+##### Compiled Object files
+*.o     binary
+*.obj   binary
+
+##### Compiled Dynamic libraries
+*.so    binary
+*.dylib binary
+
+##### Compiled Static libraries
+*.a     binary
+
+##### Language
+# C/C++
+*.c     text  diff=c   whitespace=trailing-space,space-before-tab,tab-in-indent,cr-at-eol
+*.cpp   text  diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent,cr-at-eol
+*.c++   text  diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent,cr-at-eol
+*.hpp   text  diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent,cr-at-eol
+*.tpp   text  diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent,cr-at-eol
+*.h     text  diff=c   whitespace=trailing-space,space-before-tab,tab-in-indent,cr-at-eol
+*.h++   text  diff=cpp whitespace=trailing-space,space-before-tab,tab-in-indent,cr-at-eol
+
+##### Executables
+*.out   binary

@@ -1,0 +1,28 @@
+---
+Language: Cpp
+Standard: c++17
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+IndentPPDirectives: AfterHash
+MaxEmptyLinesToKeep: 2
+ColumnLimit: 100
+PenaltyBreakString: 100
+PenaltyBreakComment: 100
+PenaltyBreakFirstLessLess: 0
+PenaltyBreakBeforeFirstCallParameter: 100
+PenaltyExcessCharacter: 1
+PenaltyReturnTypeOnItsOwnLine: 20
+AlignTrailingComments: true
+AlignEscapedNewlinesLeft: true
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+NamespaceIndentation: All
+CommentPragmas: '^ (TODO|FIXME|BUG|HACK):'
+AccessModifierOffset: 0
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: false
+AllowShortFunctionsOnASingleLine: true
+AllowShortLoopsOnASingleLine: true
+...
