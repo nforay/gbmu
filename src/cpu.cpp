@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   config.h.in                                        :+:      :+:    :+:   */
+/*   cpu.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/12 00:44:37 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/15 18:08:30 by nforay           ###   ########.fr       */
+/*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
+/*   Updated: 2022/03/16 23:06:56 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "cpu.hpp"
 
-#define PROJECT_NAME "@PROJECT_NAME@"
-#define PROJECT_VER "@PROJECT_VERSION@"
-#define PROJECT_VER_MAJOR "@PROJECT_VERSION_MAJOR@"
-#define PROJECT_VER_MINOR "@PROJECT_VERSION_MINOR@"
-#define PTOJECT_VER_PATCH "@PROJECT_VERSION_PATCH@"
-#define BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+Cpu::Cpu(Bus *bus) : Component(bus) { SPDLOG_TRACE("Cpu Constructor"); }
 
-#ifdef NDEBUG
-#    define DEBUG_MODE 0
-#else
-#    define DEBUG_MODE 1
-#endif
+Cpu::~Cpu() { SPDLOG_TRACE("Cpu Destructor"); }
+
+void Cpu::write(uint16_t addr, uint8_t data) { Component::write(addr, data); }
+
+uint8_t Cpu::read(uint16_t addr) { return Component::read(addr); }
+
+void Cpu::reset() { SPDLOG_TRACE("Cpu reset"); }
+
+void Cpu::clock() { SPDLOG_TRACE("Cpu clock"); }

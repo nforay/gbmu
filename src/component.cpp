@@ -1,26 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   config.h.in                                        :+:      :+:    :+:   */
+/*   component.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/12 00:44:37 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/15 18:08:30 by nforay           ###   ########.fr       */
+/*   Created: 2022/03/16 21:15:39 by nforay            #+#    #+#             */
+/*   Updated: 2022/03/16 23:36:16 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "component.hpp"
 
-#define PROJECT_NAME "@PROJECT_NAME@"
-#define PROJECT_VER "@PROJECT_VERSION@"
-#define PROJECT_VER_MAJOR "@PROJECT_VERSION_MAJOR@"
-#define PROJECT_VER_MINOR "@PROJECT_VERSION_MINOR@"
-#define PTOJECT_VER_PATCH "@PROJECT_VERSION_PATCH@"
-#define BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+Component::Component(Bus *bus) : _bus(bus) { SPDLOG_TRACE("Component Constructor"); }
 
-#ifdef NDEBUG
-#    define DEBUG_MODE 0
-#else
-#    define DEBUG_MODE 1
-#endif
+Component::~Component() { SPDLOG_TRACE("Component Destructor"); }
+
+void Component::write(uint16_t addr, uint8_t data) { _bus->write(addr, data); }
+
+uint8_t Component::read(uint16_t addr) const { return _bus->read(addr); }

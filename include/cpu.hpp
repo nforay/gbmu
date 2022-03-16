@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   config.h.in                                        :+:      :+:    :+:   */
+/*   cpu.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/12 00:44:37 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/15 18:08:30 by nforay           ###   ########.fr       */
+/*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
+/*   Updated: 2022/03/16 23:36:31 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#define PROJECT_NAME "@PROJECT_NAME@"
-#define PROJECT_VER "@PROJECT_VERSION@"
-#define PROJECT_VER_MAJOR "@PROJECT_VERSION_MAJOR@"
-#define PROJECT_VER_MINOR "@PROJECT_VERSION_MINOR@"
-#define PTOJECT_VER_PATCH "@PROJECT_VERSION_PATCH@"
-#define BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+#include "component.hpp"
+#include "logger.h"
 
-#ifdef NDEBUG
-#    define DEBUG_MODE 0
-#else
-#    define DEBUG_MODE 1
-#endif
+class Cpu : public Component {
+
+public:
+    Cpu(Bus *bus);
+    virtual ~Cpu();
+
+    virtual void    reset();
+    virtual void    clock();
+    virtual void    write(uint16_t addr, uint8_t data);
+    virtual uint8_t read(uint16_t addr);
+};

@@ -1,26 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   config.h.in                                        :+:      :+:    :+:   */
+/*   logger.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/12 00:44:37 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/15 18:08:30 by nforay           ###   ########.fr       */
+/*   Created: 2022/03/15 17:13:18 by nforay            #+#    #+#             */
+/*   Updated: 2022/03/16 23:31:23 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#define PROJECT_NAME "@PROJECT_NAME@"
-#define PROJECT_VER "@PROJECT_VERSION@"
-#define PROJECT_VER_MAJOR "@PROJECT_VERSION_MAJOR@"
-#define PROJECT_VER_MINOR "@PROJECT_VERSION_MINOR@"
-#define PTOJECT_VER_PATCH "@PROJECT_VERSION_PATCH@"
-#define BUILD_TYPE "@CMAKE_BUILD_TYPE@"
-
 #ifdef NDEBUG
-#    define DEBUG_MODE 0
+#    define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_OFF
 #else
-#    define DEBUG_MODE 1
+#    define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #endif
+#include "spdlog/spdlog.h"
