@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/16 23:42:16 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/17 18:56:21 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ void Gbmu::run() {
     for (auto component : _components) {
         component->clock();
     }
-    (void)_components.back()->read(0x0000);
+    if (_cpu->read(0x0000) == 0x01) {
+        SPDLOG_INFO("Gbmu bus ok");
+    }
 }
 
 void Gbmu::insert_cartridge(std::string filename) {

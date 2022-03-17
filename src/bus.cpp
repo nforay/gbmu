@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:09:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/16 23:36:18 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/17 18:02:46 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ u_int8_t Bus::read(uint16_t addr) {
         return _ram[addr];
     } else {
         SPDLOG_ERROR("Attempt to read in unmapped memory: 0x{:04X}", addr);
-        return 0;
+        return 0x00;
     }
 }

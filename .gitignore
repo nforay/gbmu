@@ -1,6 +1,7 @@
 ##### Global
 build/
 .vscode/
+roms/
 .gdb_history
 massif.out.*
 
