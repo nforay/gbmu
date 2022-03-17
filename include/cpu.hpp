@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/17 18:56:58 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/17 19:45:48 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ public:
 
     uint8_t flags_register = 0x00;
 
+    // TODO: make wrapper for registers
     // registers
     uint8_t a; // Accumulator
     uint8_t b;
@@ -44,8 +45,76 @@ public:
     uint8_t h;
     uint8_t l;
 
-    u_int16_t pc; // Program Counter
-    u_int16_t sp; // Stack Pointer
+    uint16_t pc; // Program Counter
+    uint16_t sp; // Stack Pointer
+
+    /* instructions */
+    /* Misc/control instructions */
+    void instr_nop();
+    void instr_halt();
+    void instr_cb(); // CB prefix -> opcode 16-bit
+    void instr_ei();
+
+    /* Jumps/calls instructions */
+    void instr_jr();
+    void instr_jr(uint8_t); // TODO: condition flag
+    void instr_jp();
+    void instr_jp(uint8_t); // TODO: condition flag
+    void instr_jp(uint16_t);
+    void instr_ret();
+    void instr_ret(uint8_t); // TODO: condition flag
+    void instr_reti();
+    void instr_call();
+    void instr_call(uint8_t); // TODO: condition flag
+    void instr_rst();
+
+    /* 8bit load/store/move instructions */
+    void instr_ld(uint8_t);
+
+    /* 16bit load/store/move instructions */
+    void instr_ld(uint16_t);
+
+    /* 8bit arithmetic/logical instructions */
+    void instr_inc(uint8_t);
+    void instr_inc(uint16_t);
+    void instr_dec(uint8_t);
+    void instr_dec(uint16_t);
+    void instr_daa();
+    void instr_scf();
+    void instr_cpl();
+    void instr_ccf();
+    void instr_add();
+    void instr_adc();
+    void instr_sub();
+    void instr_sbc();
+    void instr_and(uint8_t);
+    void instr_and(uint16_t);
+    void instr_xor(uint8_t);
+    void instr_xor(uint16_t);
+    void instr_or(uint8_t);
+    void instr_or(uint16_t);
+    void instr_cp();
+
+    /* 	16bit arithmetic/logical instructions */
+    void instr_inc(uint16_t);
+    void instr_add(uint16_t);
+
+    /* 	8bit rotations/shifts and bit instructions */
+    void instr_rlca();
+    void instr_rla();
+    void instr_rrca();
+    void instr_rra();
+    void instr_rlc();
+    void instr_rl();
+    void instr_rrc();
+    void instr_rr();
+    void instr_sla();
+    void instr_sra();
+    void instr_swap();
+    void instr_srl();
+    void instr_bit();
+    void instr_res();
+    void instr_set();
 
     /* opcodes 8-bit loads */
     void opcode_00();
