@@ -6,13 +6,13 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 20:05:05 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/18 21:20:25 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cpu.hpp"
 
-void Cpu::opcode_00(){};
+void Cpu::opcode_00() { Cpu::instr_nop(); };
 void Cpu::opcode_01(){};
 void Cpu::opcode_02(){};
 void Cpu::opcode_03(){};
