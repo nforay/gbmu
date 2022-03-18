@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 18:55:02 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/18 19:10:23 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ public:
     virtual void    clock();
     virtual void    write(uint16_t addr, uint8_t data);
     virtual uint8_t read(uint16_t addr);
+    void            execute(uint8_t opcode, Reg::Word &pc);
 
     enum class Condition {
         NZ,
@@ -34,11 +35,11 @@ public:
         C,
     };
 
-    Register::Flag f;
+    Reg::Flag f;
 
-    Register::Byte a, b, c, d, e, h, l;
+    Reg::Byte a, b, c, d, e, h, l;
 
-    Register::Word pc, sp; // Program Counter, Stack Pointer
+    Reg::Word pc, sp; // Program Counter, Stack Pointer
 
     /* instructions */
     /* Misc/control instructions */

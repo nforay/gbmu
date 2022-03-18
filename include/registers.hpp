@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:55:20 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 17:49:26 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/18 19:10:29 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include <stdint.h>
 
-namespace Register {
+namespace Reg {
     class Byte {
     public:
         Byte() = default;
@@ -63,4 +63,4 @@ namespace Register {
     private:
         uint16_t _value = 0;
     };
-} // namespace Register
+} // namespace Reg
