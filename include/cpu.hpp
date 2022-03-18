@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 19:55:25 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/18 23:09:54 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@ public:
     /* Misc/control instructions */
     void instr_nop();
     void instr_halt();
+    void instr_stop();
     void instr_cb(); // CB prefix -> opcode 16-bit
+    void instr_di();
     void instr_ei();
 
     /* Jumps/calls instructions */
@@ -62,7 +64,11 @@ public:
     void instr_rst();
 
     /* 8bit load/store/move instructions */
-    void instr_ld(uint8_t);
+    void instr_ld(Reg::Byte &dst);
+    void instr_ld(Reg::Byte &dst, const Reg::Byte &src);
+    void instr_ld(Reg::Byte &dst, const Reg::Word &src); // TODO: optimise, no need to construct a new word ?
+    void instr_ld(const Reg::Word &dst, const Reg::Byte &src);
+    void instr_ld(const Reg::Word &dst);
 
     /* 16bit load/store/move instructions */
     void instr_ld(uint16_t);
