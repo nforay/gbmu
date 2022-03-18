@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/17 19:48:48 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/18 20:10:10 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,10 @@ void Gbmu::run() {
     if (_cpu->read(0x0000) == 0x01) {
         SPDLOG_INFO("Gbmu bus ok");
     }
+    _cpu->execute(0x00, _cpu->pc);
+    _cpu->execute(0xCB, _cpu->pc);
+    _cpu->execute(0xD3, _cpu->pc);
+    _cpu->execute(0x10, _cpu->pc);
 }
 
 void Gbmu::insert_cartridge(std::string filename) {

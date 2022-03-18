@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 17:19:22 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 19:10:57 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/18 20:02:23 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ Reg::Byte::~Byte() {}
 uint8_t Reg::Byte::get() const { return _value; }
 
 bool Reg::Byte::get_bit(uint8_t bit) const { return (_value >> bit) & 1; }
+
+void Reg::Byte::set_bit(uint8_t bit, bool value) {
+    if (value)
+        _value |= (1 << bit);
+    else
+        _value &= ~(1 << bit);
+}
 
 void Reg::Byte::set(uint8_t value) { _value = value; }
 
@@ -54,6 +61,6 @@ void Reg::Word::set(uint16_t value) { _value = value; }
 
 void Reg::Word::reset() { _value = 0; }
 
-Byte Reg::Word::low() { return Byte(_value & 0xFF); } // 00000000 11111111
+Reg::Byte Reg::Word::low() { return Reg::Byte(_value & 0xFF); } // 00000000 11111111
 
-Byte Reg::Word::high() { return Byte(_value >> 8); }
+Reg::Byte Reg::Word::high() { return Reg::Byte(_value >> 8); }

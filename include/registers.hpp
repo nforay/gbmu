@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:55:20 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 19:10:29 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/18 19:59:19 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ namespace Reg {
 
         uint8_t get() const;
         bool    get_bit(uint8_t bit) const;
+        void    set_bit(uint8_t bit, bool value);
         void    set(uint8_t value);
 
         void reset();
