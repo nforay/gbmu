@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 19:08:24 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 19:43:53 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 void Cpu::opcode_00() { Cpu::instr_nop(); };
 void Cpu::opcode_01() { Cpu::instr_ld(bc); };
 void Cpu::opcode_02() { Cpu::instr_ld(Reg::Word(b, c), a); };
-void Cpu::opcode_03(){};
+void Cpu::opcode_03() { Cpu::instr_inc_nn(bc); };
 void Cpu::opcode_04() { Cpu::instr_inc(b); };
 void Cpu::opcode_05() { Cpu::instr_dec(b); };
 void Cpu::opcode_06() { Cpu::instr_ld(b); };
 void Cpu::opcode_07(){};
 void Cpu::opcode_08() { Cpu::instr_ld_nn_sp(); };
-void Cpu::opcode_09(){};
+void Cpu::opcode_09() { Cpu::instr_add_hl(bc); };
 void Cpu::opcode_0A() { Cpu::instr_ld(a, bc); };
-void Cpu::opcode_0B(){};
+void Cpu::opcode_0B() { Cpu::instr_dec_nn(bc); };
 void Cpu::opcode_0C() { Cpu::instr_inc(c); };
 void Cpu::opcode_0D() { Cpu::instr_dec(c); };
 void Cpu::opcode_0E() { Cpu::instr_ld(c); };
@@ -31,15 +31,15 @@ void Cpu::opcode_0F(){};
 void Cpu::opcode_10() { Cpu::instr_stop(); };
 void Cpu::opcode_11() { Cpu::instr_ld(de); };
 void Cpu::opcode_12() { Cpu::instr_ld(Reg::Word(d, e), a); };
-void Cpu::opcode_13(){};
+void Cpu::opcode_13() { Cpu::instr_inc_nn(de); };
 void Cpu::opcode_14() { Cpu::instr_inc(d); };
 void Cpu::opcode_15() { Cpu::instr_dec(d); };
 void Cpu::opcode_16() { Cpu::instr_ld(d); };
 void Cpu::opcode_17(){};
 void Cpu::opcode_18(){};
-void Cpu::opcode_19(){};
+void Cpu::opcode_19() { Cpu::instr_add_hl(de); };
 void Cpu::opcode_1A() { Cpu::instr_ld(a, de); };
-void Cpu::opcode_1B(){};
+void Cpu::opcode_1B() { Cpu::instr_dec_nn(de); };
 void Cpu::opcode_1C() { Cpu::instr_inc(e); };
 void Cpu::opcode_1D() { Cpu::instr_dec(e); };
 void Cpu::opcode_1E() { Cpu::instr_ld(e); };
@@ -47,15 +47,15 @@ void Cpu::opcode_1F(){};
 void Cpu::opcode_20(){};
 void Cpu::opcode_21() { Cpu::instr_ld(hl); };
 void Cpu::opcode_22() { Cpu::instr_ld_hli_a(a); };
-void Cpu::opcode_23(){};
+void Cpu::opcode_23() { Cpu::instr_inc_nn(hl); };
 void Cpu::opcode_24() { Cpu::instr_inc(h); };
 void Cpu::opcode_25() { Cpu::instr_dec(h); };
 void Cpu::opcode_26() { Cpu::instr_ld(h); };
 void Cpu::opcode_27(){};
 void Cpu::opcode_28(){};
-void Cpu::opcode_29(){};
+void Cpu::opcode_29() { Cpu::instr_add_hl(hl); };
 void Cpu::opcode_2A() { Cpu::instr_ld_a_hli(a); };
-void Cpu::opcode_2B(){};
+void Cpu::opcode_2B() { Cpu::instr_dec_nn(hl); };
 void Cpu::opcode_2C() { Cpu::instr_inc(l); };
 void Cpu::opcode_2D() { Cpu::instr_dec(l); };
 void Cpu::opcode_2E() { Cpu::instr_ld(l); };
@@ -63,15 +63,15 @@ void Cpu::opcode_2F(){};
 void Cpu::opcode_30(){};
 void Cpu::opcode_31() { Cpu::instr_ld(sp); };
 void Cpu::opcode_32() { Cpu::instr_ld_hld_a(a); };
-void Cpu::opcode_33(){};
+void Cpu::opcode_33() { Cpu::instr_inc_nn(sp); };
 void Cpu::opcode_34() { Cpu::instr_inc(hl.get()); };
 void Cpu::opcode_35() { Cpu::instr_dec(hl.get()); };
 void Cpu::opcode_36() { Cpu::instr_ld(Reg::Word(h, l)); };
 void Cpu::opcode_37(){};
 void Cpu::opcode_38(){};
-void Cpu::opcode_39(){};
+void Cpu::opcode_39() { Cpu::instr_add_hl(sp); };
 void Cpu::opcode_3A() { Cpu::instr_ld_a_hld(a); };
-void Cpu::opcode_3B(){};
+void Cpu::opcode_3B() { Cpu::instr_dec_nn(sp); };
 void Cpu::opcode_3C() { Cpu::instr_inc(a); };
 void Cpu::opcode_3D() { Cpu::instr_dec(a); };
 void Cpu::opcode_3E() { Cpu::instr_ld(a); };
@@ -244,7 +244,7 @@ void Cpu::opcode_E4(){};
 void Cpu::opcode_E5() { Cpu::instr_push_nn(hl); };
 void Cpu::opcode_E6() { Cpu::instr_and_n(); };
 void Cpu::opcode_E7(){};
-void Cpu::opcode_E8(){};
+void Cpu::opcode_E8() { Cpu::instr_add_sp_n(); };
 void Cpu::opcode_E9(){};
 void Cpu::opcode_EA() { Cpu::instr_ld_nn_to(a); };
 void Cpu::opcode_EB(){};

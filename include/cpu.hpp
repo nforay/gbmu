@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 19:04:41 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 19:44:34 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,13 @@ public:
     void instr_ccf();
 
     /* 	16bit arithmetic/logical instructions */
-    void instr_inc(Reg::Word);
-    void instr_add(Reg::Word);
-    void instr_dec(Reg::Word);
+    void instr_add_hl(const Reg::BytePair &src);
+    void instr_add_hl(const Reg::Word &src);
+    void instr_add_sp_n();
+    void instr_inc_nn(Reg::BytePair &src);
+    void instr_inc_nn(Reg::Word &src);
+    void instr_dec_nn(Reg::BytePair &src);
+    void instr_dec_nn(Reg::Word &src);
 
     /* 	8bit rotations/shifts and bit instructions */
     void instr_rlca();

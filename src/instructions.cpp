@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 19:08:35 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 19:45:03 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -585,6 +585,67 @@ void Cpu::instr_dec(const uint16_t &addr) {
     f.set_half_carry((tmp & 0x0F) == 0x0F); // check behaviour Set if no borrow from bit 4.
 };
 
+/**
+ * 16bit arithmetic/logical instructions ***************************************
+ */
+
+/**
+ * @brief      Add Register Pair src to Register Pair HL.
+ * @param      src 16-bit Register Pair.
+ */
+void Cpu::instr_add_hl(const Reg::BytePair &src) {
+    uint32_t value = hl.get() + src.get();
+    f.set_sub(0);
+    f.set_half_carry((hl.get() & 0xFFF + src.get() & 0xFFF) > 0xFFF); // check behaviour
+    f.set_carry((value & 0x1000) != 0);                               // check behaviour
+    hl.set(value & 0xFFFF);
+};
+
+/**
+ * @brief      Add Word src to Register Pair HL.
+ * @param      src Word.
+ */
+void Cpu::instr_add_hl(const Reg::Word &src) {
+    uint32_t value = hl.get() + src.get();
+    f.set_sub(0);
+    f.set_half_carry((hl.get() & 0xFFF + src.get() & 0xFFF) > 0xFFF); // check behaviour
+    f.set_carry((value & 0x1000) != 0);                               // check behaviour
+    hl.set(value & 0xFFFF);
+};
+
+/**
+ * @brief      Add one byte signed immediate value to Stack Pointer (SP).
+ */
+void Cpu::instr_add_sp_n() {
+    uint32_t value = sp.get() + read(pc.get());
+    pc.inc();
+    f.set_zero(0);
+    f.set_sub(0);
+    f.set_half_carry(0); // TODO: needs reasearch
+    f.set_carry(0);      // TODO: needs reasearch
+    sp.set(value & 0xFFFF);
+};
+
+/**
+ * @brief      Increment 16-bit Register Pair nn
+ */
+void Cpu::instr_inc_nn(Reg::BytePair &src) { src.inc(); }
+
+/**
+ * @brief      Increment Word nn
+ */
+void Cpu::instr_inc_nn(Reg::Word &src) { src.inc(); }
+
+/**
+ * @brief      Decrement 16-bit Register Pair nn
+ */
+void Cpu::instr_dec_nn(Reg::BytePair &src) { src.dec(); }
+
+/**
+ * @brief      Decrement Word nn
+ */
+void Cpu::instr_dec_nn(Reg::Word &src) { src.dec(); }
+
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};
 void Cpu::instr_jr(Cpu::Condition cond){};
@@ -601,9 +662,6 @@ void Cpu::instr_daa(){};
 void Cpu::instr_scf(){};
 void Cpu::instr_cpl(){};
 void Cpu::instr_ccf(){};
-void Cpu::instr_inc(Reg::Word){};
-void Cpu::instr_add(Reg::Word){};
-void Cpu::instr_dec(Reg::Word){};
 void Cpu::instr_rlca(){};
 void Cpu::instr_rla(){};
 void Cpu::instr_rrca(){};
