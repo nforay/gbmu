@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 18:13:08 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 18:43:49 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,20 +114,21 @@ public:
     void instr_or(const Reg::Byte &src);
     void instr_or(const Reg::BytePair &src);
     void instr_or_n();
+    void instr_xor(const Reg::Byte &src);
+    void instr_xor(const Reg::BytePair &src);
+    void instr_xor_n();
+    void instr_cp(const Reg::Byte &src);
+    void instr_cp(const Reg::BytePair &src);
+    void instr_cp_n();
+    void instr_inc(Reg::Byte &src);
+    void instr_inc(const uint16_t &addr);
+    void instr_dec(Reg::Byte &src);
+    void instr_dec(const uint16_t &addr);
 
-
-    void instr_inc(uint8_t);
-    void instr_inc(uint16_t);
-    void instr_dec(uint8_t);
-    void instr_dec(uint16_t);
     void instr_daa();
     void instr_scf();
     void instr_cpl();
     void instr_ccf();
-    void instr_sbc();
-    void instr_xor(uint8_t);
-    void instr_xor(uint16_t);
-    void instr_cp();
 
     /* 	16bit arithmetic/logical instructions */
     void instr_inc(Reg::Word);

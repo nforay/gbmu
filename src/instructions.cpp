@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 18:13:14 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 18:48:35 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -472,6 +472,118 @@ void Cpu::instr_or_n() {
     f.set_carry(0);
 };
 
+/**
+ * @brief      Logical exclusive OR n with register A, result in A.
+ */
+void Cpu::instr_xor(const Reg::Byte &src) {
+    a.set(a.get() ^ src.get());
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Logical exclusive OR value at Register Pair (HL) with A, result in A.
+ */
+void Cpu::instr_xor(const Reg::BytePair &src) {
+    a.set(a.get() ^ read(src.get()));
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Logical exclusive OR value at 16-bit nn (immediate address) with A, result in A.
+ */
+void Cpu::instr_xor_n() {
+    a.set(a.get() ^ read(pc.get()));
+    pc.inc();
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Compare A with n. This is basically an A - n subtraction instruction
+ *  but the results are thrown away.
+ */
+void Cpu::instr_cp(const Reg::Byte &src) {
+    f.set_zero(a.get() == src.get());
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - src.get() & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < src.get());
+};
+
+/**
+ * @brief      Compare A with value at Register Pair (HL). This is basically
+ *  an A - n subtraction instruction but the results are thrown away.
+ */
+void Cpu::instr_cp(const Reg::BytePair &src) {
+    uint8_t tmp = read(src.get());
+    f.set_zero(tmp == a.get());
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < tmp);
+};
+
+/**
+ * @brief      Compare A with value at 16-bit nn (immediate address). This is
+ *  basically an A - n subtraction instruction but the results are thrown away.
+ */
+void Cpu::instr_cp_n() {
+    uint8_t tmp = read(pc.get());
+    pc.inc();
+    f.set_zero(tmp == a.get());
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < tmp);
+};
+
+/**
+ * @brief      Increment register n.
+ */
+void Cpu::instr_inc(Reg::Byte &src) {
+    src.inc();
+    f.set_zero(src.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry((src.get() & 0x0F) == 0); // check behaviour Set if carry from bit 3.
+};
+
+/**
+ * @brief      Increment value at Register Pair (HL).
+ */
+void Cpu::instr_inc(const uint16_t &addr) {
+    uint8_t tmp = (read(addr) + 1) & 0xFF;
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry((tmp & 0x0F) == 0); // check behaviour Set if carry from bit 3.
+};
+
+/**
+ * @brief      Decrement register n.
+ */
+void Cpu::instr_dec(Reg::Byte &src) {
+    src.dec();
+    f.set_zero(src.get() == 0);
+    f.set_sub(1);
+    f.set_half_carry((src.get() & 0x0F) == 0x0F); // check behaviour Set if no borrow from bit 4.
+};
+
+/**
+ * @brief      Decrement value at Register Pair (HL).
+ */
+void Cpu::instr_dec(const uint16_t &addr) {
+    uint8_t tmp = (read(addr) - 1) & 0xFF;
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(1);
+    f.set_half_carry((tmp & 0x0F) == 0x0F); // check behaviour Set if no borrow from bit 4.
+};
+
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};
 void Cpu::instr_jr(Cpu::Condition cond){};
@@ -484,18 +596,10 @@ void Cpu::instr_reti(){};
 void Cpu::instr_call(){};
 void Cpu::instr_call(Cpu::Condition cond){};
 void Cpu::instr_rst(){};
-void Cpu::instr_inc(uint8_t){};
-void Cpu::instr_inc(uint16_t){};
-void Cpu::instr_dec(uint8_t){};
-void Cpu::instr_dec(uint16_t){};
 void Cpu::instr_daa(){};
 void Cpu::instr_scf(){};
 void Cpu::instr_cpl(){};
 void Cpu::instr_ccf(){};
-void Cpu::instr_sbc(){};
-void Cpu::instr_xor(uint8_t){};
-void Cpu::instr_xor(uint16_t){};
-void Cpu::instr_cp(){};
 void Cpu::instr_inc(Reg::Word){};
 void Cpu::instr_add(Reg::Word){};
 void Cpu::instr_dec(Reg::Word){};
