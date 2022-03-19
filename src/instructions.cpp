@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 19:45:03 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 20:19:03 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -646,6 +646,92 @@ void Cpu::instr_dec_nn(Reg::BytePair &src) { src.dec(); }
  */
 void Cpu::instr_dec_nn(Reg::Word &src) { src.dec(); }
 
+/**
+ * @brief       Decimal adjust register A. This instruction adjusts register A
+ *  so that the correct representation of Binary Coded Decimal (BCD) is obtained.
+ */
+void Cpu::instr_daa() {
+    uint8_t tmp = a.get();
+    // https://forums.nesdev.org/viewtopic.php?p=196282#p196282
+    if (!f.get_sub()) { // after an addition, adjust if (half-)carry occurred or if result is out of bounds
+        if (f.get_carry() || tmp > 0x99) {
+            tmp += 0x60;
+            f.set_carry(1);
+        }
+        if (f.get_half_carry() || (tmp & 0x0f) > 0x09) {
+            tmp += 0x6;
+        }
+    } else { // after a subtraction, only adjust if (half-)carry occurred
+        if (f.get_carry()) {
+            tmp -= 0x60;
+        }
+        if (f.get_half_carry()) {
+            tmp -= 0x6;
+        }
+    }
+    a.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Complement A register. (Flip all bits.)
+ */
+void Cpu::instr_cpl() {
+    a.set(~a.get());
+    f.set_sub(1);
+    f.set_half_carry(1);
+};
+
+/**
+ * @brief      Complement carry flag. If C flag is set, then reset it.
+ *  If C flag is reset, then set it.
+ */
+void Cpu::instr_ccf() {
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(!f.get_carry());
+};
+
+/**
+ * @brief      Set Carry flag.
+ */
+void Cpu::instr_scf() {
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(1);
+};
+
+/**
+ * 8bit rotations/shifts and bit instructions **********************************
+ */
+
+/**
+ * @brief      Swap upper & lower nibles of n.
+ */
+void Cpu::instr_swap(Reg::Byte &src) {
+    uint8_t tmp = src.get();
+    tmp         = ((tmp & 0x0F) << 4 | (tmp & 0xF0) >> 4);
+    src.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Swap upper & lower nibles of Byte at address.
+ */
+void Cpu::instr_swap(const uint16_t &addr) {
+    uint8_t tmp = read(addr);
+    tmp         = ((tmp & 0x0F) << 4 | (tmp & 0xF0) >> 4);
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(0);
+};
+
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};
 void Cpu::instr_jr(Cpu::Condition cond){};
@@ -658,10 +744,6 @@ void Cpu::instr_reti(){};
 void Cpu::instr_call(){};
 void Cpu::instr_call(Cpu::Condition cond){};
 void Cpu::instr_rst(){};
-void Cpu::instr_daa(){};
-void Cpu::instr_scf(){};
-void Cpu::instr_cpl(){};
-void Cpu::instr_ccf(){};
 void Cpu::instr_rlca(){};
 void Cpu::instr_rla(){};
 void Cpu::instr_rrca(){};
@@ -672,7 +754,6 @@ void Cpu::instr_rrc(){};
 void Cpu::instr_rr(){};
 void Cpu::instr_sla(){};
 void Cpu::instr_sra(){};
-void Cpu::instr_swap(){};
 void Cpu::instr_srl(){};
 void Cpu::instr_bit(){};
 void Cpu::instr_res(){};

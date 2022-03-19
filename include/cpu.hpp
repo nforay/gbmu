@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 19:44:34 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 19:52:35 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,9 @@ public:
     void instr_dec_nn(Reg::Word &src);
 
     /* 	8bit rotations/shifts and bit instructions */
+    void instr_swap(Reg::Byte &src);
+    void instr_swap(const uint16_t &addr);
+
     void instr_rlca();
     void instr_rla();
     void instr_rrca();
@@ -150,7 +153,6 @@ public:
     void instr_rr();
     void instr_sla();
     void instr_sra();
-    void instr_swap();
     void instr_srl();
     void instr_bit();
     void instr_res();
