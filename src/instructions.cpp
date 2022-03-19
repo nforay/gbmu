@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 14:32:36 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 14:49:10 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void Cpu::instr_ld(Reg::Byte &dst, const Reg::BytePair &src) { dst.set(Cpu::read
  * @param      src  The 8-bit source register
  */
 void Cpu::instr_ld(const Reg::Word &dst, const Reg::Byte &src) {
-    Cpu::write(dst.get(), src.get()); // TODO: check behaviour
+    Cpu::write(dst.get(), src.get());
 };
 
 /**
@@ -91,7 +91,7 @@ void Cpu::instr_ld_nn_from(Reg::Byte &dst) {
     pc.inc();
     uint8_t high = Cpu::read(pc.get());
     pc.inc();
-    dst.set(Cpu::read(Reg::Word(high, low).get())); // TODO: check behaviour
+    dst.set(Cpu::read(Reg::Word(high, low).get()));
 };
 
 /**
@@ -103,7 +103,7 @@ void Cpu::instr_ld_nn_to(Reg::Byte &src) {
     pc.inc();
     uint8_t high = Cpu::read(pc.get());
     pc.inc();
-    Cpu::write(Reg::Word(high, low).get(), src.get()); // TODO: check behaviour
+    Cpu::write(Reg::Word(high, low).get(), src.get());
 };
 
 /**
