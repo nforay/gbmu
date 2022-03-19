@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:55:20 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 14:22:12 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:46:43 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ namespace Reg {
         BytePair(Byte &high, Byte &low);
         ~BytePair();
 
-        Byte &   high();
-        Byte &   low();
+        Byte &   high() const;
+        Byte &   low() const;
         void     set(uint16_t value);
         uint16_t get() const;
         void     reset();

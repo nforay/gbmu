@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 15:28:57 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:43:41 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Cpu::Cpu(Bus *bus) : Component(bus) { SPDLOG_TRACE("Cpu Constructor"); }
 
 Cpu::~Cpu() { SPDLOG_TRACE("Cpu Destructor"); }
 
-void Cpu::write(uint16_t addr, uint8_t data) { Component::write(addr, data); }
+void Cpu::write(uint16_t addr, const uint8_t data) { Component::write(addr, data); }
 
 uint8_t Cpu::read(uint16_t addr) { return Component::read(addr); }
 
@@ -86,16 +86,16 @@ void Cpu::execute(uint8_t opcode, Reg::Word &pc) {
     }
 }
 
-void Cpu::push(Reg::BytePair &data) {
+void Cpu::push(const Reg::BytePair &data) {
     write(sp.get(), data.high().get());
-    sp.inc();
+    sp.dec();
     write(sp.get(), data.low().get());
-    sp.inc();
+    sp.dec();
 }
 
 void Cpu::pop(Reg::BytePair &data) {
     data.low().set(read(sp.get()));
-    sp.dec();
+    sp.inc();
     data.high().set(read(sp.get()));
-    sp.dec();
+    sp.inc();
 }

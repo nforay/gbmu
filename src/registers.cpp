@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 17:19:22 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 14:22:30 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:46:59 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ Reg::BytePair::BytePair(Byte &high, Byte &low) : _high(high), _low(low) {}
 
 Reg::BytePair::~BytePair() {}
 
-Reg::Byte &Reg::BytePair::high() { return _high; }
+Reg::Byte &Reg::BytePair::high() const { return _high; }
 
-Reg::Byte &Reg::BytePair::low() { return _low; }
+Reg::Byte &Reg::BytePair::low() const { return _low; }
 
 void Reg::BytePair::set(uint16_t value) {
     _high.set((value & 0xFF00) >> 8);

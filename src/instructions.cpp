@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 15:36:32 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:42:15 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,7 @@ void Cpu::instr_ld_nn_sp() {
  * @brief      Push register pair nn onto stack.
  * Decrement Stack Pointer (SP) twice.
  */
-void Cpu::instr_push_nn(Reg::BytePair &src) { Cpu::push(src); };
+void Cpu::instr_push_nn(const Reg::BytePair &src) { Cpu::push(src); };
 
 /**
  * @brief      Pop two bytes off stack into register pair nn.

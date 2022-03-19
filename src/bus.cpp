@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:09:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/17 18:02:46 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:44:12 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Bus::Bus() { SPDLOG_TRACE("Bus Constructor"); }
 
 Bus::~Bus() { SPDLOG_TRACE("Bus Destructor"); }
 
-void Bus::write(uint16_t addr, uint8_t data) {
+void Bus::write(uint16_t addr, const uint8_t data) {
     if (addr >= 0x0000 && addr <= 0xFFFF) {
         SPDLOG_TRACE("Bus write: 0x{:04X} = 0x{:02X}", addr, data);
         _ram[addr] = data;

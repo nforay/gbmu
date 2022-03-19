@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 15:37:34 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:44:16 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ public:
 
     virtual void    reset();
     virtual void    clock();
-    virtual void    write(uint16_t addr, uint8_t data);
+    virtual void    write(uint16_t addr, const uint8_t data);
     virtual uint8_t read(uint16_t addr);
     void            execute(uint8_t opcode, Reg::Word &pc);
-    void            push(Reg::BytePair &data);
+    void            push(const Reg::BytePair &data);
     void            pop(Reg::BytePair &data);
 
     enum class Condition {
@@ -92,7 +92,7 @@ public:
     void instr_ld(Reg::Word &dst, const Reg::BytePair &src);
     void instr_ld_hl_sp_n();
     void instr_ld_nn_sp();
-    void instr_push_nn(Reg::BytePair &src);
+    void instr_push_nn(const Reg::BytePair &src);
     void instr_pop_nn(Reg::BytePair &src);
 
     /* 8bit arithmetic/logical instructions */
