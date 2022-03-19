@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 18:48:35 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 19:08:35 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,10 +263,10 @@ void Cpu::instr_add(const Reg::Byte &src) {
 };
 
 /**
- * @brief      Add value at Register Pair (HL) to A.
+ * @brief      Add value at addr from Register Pair (HL) to A.
  */
-void Cpu::instr_add(const Reg::BytePair &src) {
-    uint16_t value = a.get() + read(src.get());
+void Cpu::instr_add(const uint16_t &addr) {
+    uint16_t value = a.get() + read(addr);
     a.set(value & 0x00FF);
     f.set_zero(a.get() == 0);
     f.set_sub(0);
@@ -300,10 +300,10 @@ void Cpu::instr_adc(const Reg::Byte &src) {
 };
 
 /**
- * @brief      Add value at Register Pair (HL) + Carry flag to A.
+ * @brief      Add value at addr from Register Pair (HL) + Carry flag to A.
  */
-void Cpu::instr_adc(const Reg::BytePair &src) {
-    uint8_t  tmp   = read(src.get());
+void Cpu::instr_adc(const uint16_t &addr) {
+    uint8_t  tmp   = read(addr);
     uint16_t value = a.get() + tmp + f.get_carry();
     f.set_zero(a.get() == 0);
     f.set_sub(0);
@@ -339,10 +339,10 @@ void Cpu::instr_sub(const Reg::Byte &src) {
 };
 
 /**
- * @brief      Substract value at Register Pair (HL) from A.
+ * @brief      Substract value at addr from Register Pair (HL) from A.
  */
-void Cpu::instr_sub(const Reg::BytePair &src) {
-    uint8_t tmp   = read(src.get());
+void Cpu::instr_sub(const uint16_t &addr) {
+    uint8_t tmp   = read(addr);
     uint8_t value = a.get() - tmp;
     f.set_zero(value == 0);
     f.set_sub(1);
@@ -378,10 +378,10 @@ void Cpu::instr_sbc(const Reg::Byte &src) {
 };
 
 /**
- * @brief      Substract value at Register Pair (HL) + Carry flag from A.
+ * @brief      Substract value at addr from Register Pair (HL) + Carry flag from A.
  */
-void Cpu::instr_sbc(const Reg::BytePair &src) {
-    uint8_t tmp   = read(src.get());
+void Cpu::instr_sbc(const uint16_t &addr) {
+    uint8_t tmp   = read(addr);
     uint8_t value = a.get() - tmp - f.get_carry();
     f.set_zero(value == 0);
     f.set_sub(1);
@@ -416,10 +416,10 @@ void Cpu::instr_and(const Reg::Byte &src) {
 };
 
 /**
- * @brief      Logically AND value at Register Pair (HL) with A, result in A.
+ * @brief      Logically AND value at addr from Register Pair (HL) with A, result in A.
  */
-void Cpu::instr_and(const Reg::BytePair &src) {
-    a.set(a.get() & read(src.get()));
+void Cpu::instr_and(const uint16_t &addr) {
+    a.set(a.get() & read(addr));
     f.set_zero(a.get() == 0);
     f.set_sub(0);
     f.set_half_carry(1);
@@ -450,10 +450,10 @@ void Cpu::instr_or(const Reg::Byte &src) {
 };
 
 /**
- * @brief      Logically OR value at Register Pair (HL) with A, result in A.
+ * @brief      Logically OR value at addr from Register Pair (HL) with A, result in A.
  */
-void Cpu::instr_or(const Reg::BytePair &src) {
-    a.set(a.get() | read(src.get()));
+void Cpu::instr_or(const uint16_t &addr) {
+    a.set(a.get() | read(addr));
     f.set_zero(a.get() == 0);
     f.set_sub(0);
     f.set_half_carry(0);
@@ -484,10 +484,11 @@ void Cpu::instr_xor(const Reg::Byte &src) {
 };
 
 /**
- * @brief      Logical exclusive OR value at Register Pair (HL) with A, result in A.
+ * @brief      Logical exclusive OR value at addr from Register Pair (HL) with A,
+ *  result in A.
  */
-void Cpu::instr_xor(const Reg::BytePair &src) {
-    a.set(a.get() ^ read(src.get()));
+void Cpu::instr_xor(const uint16_t &addr) {
+    a.set(a.get() ^ read(addr));
     f.set_zero(a.get() == 0);
     f.set_sub(0);
     f.set_half_carry(0);
@@ -518,11 +519,11 @@ void Cpu::instr_cp(const Reg::Byte &src) {
 };
 
 /**
- * @brief      Compare A with value at Register Pair (HL). This is basically
- *  an A - n subtraction instruction but the results are thrown away.
+ * @brief      Compare A with value at addr from Register Pair (HL). This is
+ * basically an A - n subtraction instruction but the results are thrown away.
  */
-void Cpu::instr_cp(const Reg::BytePair &src) {
-    uint8_t tmp = read(src.get());
+void Cpu::instr_cp(const uint16_t &addr) {
+    uint8_t tmp = read(addr);
     f.set_zero(tmp == a.get());
     f.set_sub(1);
     f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
@@ -556,7 +557,7 @@ void Cpu::instr_inc(Reg::Byte &src) {
  * @brief      Increment value at Register Pair (HL).
  */
 void Cpu::instr_inc(const uint16_t &addr) {
-    uint8_t tmp = (read(addr) + 1) & 0xFF;
+    uint8_t tmp = static_cast<uint8_t>(read(addr) + 1);
     write(addr, tmp);
     f.set_zero(tmp == 0);
     f.set_sub(0);
@@ -577,7 +578,7 @@ void Cpu::instr_dec(Reg::Byte &src) {
  * @brief      Decrement value at Register Pair (HL).
  */
 void Cpu::instr_dec(const uint16_t &addr) {
-    uint8_t tmp = (read(addr) - 1) & 0xFF;
+    uint8_t tmp = static_cast<uint8_t>(read(addr) - 1);
     write(addr, tmp);
     f.set_zero(tmp == 0);
     f.set_sub(1);

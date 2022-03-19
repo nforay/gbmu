@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 18:48:21 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 19:08:24 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ void Cpu::opcode_82() { Cpu::instr_add(d); };
 void Cpu::opcode_83() { Cpu::instr_add(e); };
 void Cpu::opcode_84() { Cpu::instr_add(h); };
 void Cpu::opcode_85() { Cpu::instr_add(l); };
-void Cpu::opcode_86() { Cpu::instr_add(hl); };
+void Cpu::opcode_86() { Cpu::instr_add(hl.get()); };
 void Cpu::opcode_87() { Cpu::instr_add(a); };
 void Cpu::opcode_88() { Cpu::instr_adc(b); };
 void Cpu::opcode_89() { Cpu::instr_adc(c); };
@@ -154,7 +154,7 @@ void Cpu::opcode_8A() { Cpu::instr_adc(d); };
 void Cpu::opcode_8B() { Cpu::instr_adc(e); };
 void Cpu::opcode_8C() { Cpu::instr_adc(h); };
 void Cpu::opcode_8D() { Cpu::instr_adc(l); };
-void Cpu::opcode_8E() { Cpu::instr_adc(hl); };
+void Cpu::opcode_8E() { Cpu::instr_adc(hl.get()); };
 void Cpu::opcode_8F() { Cpu::instr_adc(a); };
 void Cpu::opcode_90() { Cpu::instr_sub(b); };
 void Cpu::opcode_92() { Cpu::instr_sub(c); };
@@ -162,7 +162,7 @@ void Cpu::opcode_91() { Cpu::instr_sub(d); };
 void Cpu::opcode_93() { Cpu::instr_sub(e); };
 void Cpu::opcode_94() { Cpu::instr_sub(h); };
 void Cpu::opcode_95() { Cpu::instr_sub(l); };
-void Cpu::opcode_96() { Cpu::instr_sub(hl); };
+void Cpu::opcode_96() { Cpu::instr_sub(hl.get()); };
 void Cpu::opcode_97() { Cpu::instr_sub(a); };
 void Cpu::opcode_98() { Cpu::instr_sbc(b); };
 void Cpu::opcode_99() { Cpu::instr_sbc(c); };
@@ -170,7 +170,7 @@ void Cpu::opcode_9A() { Cpu::instr_sbc(d); };
 void Cpu::opcode_9B() { Cpu::instr_sbc(e); };
 void Cpu::opcode_9C() { Cpu::instr_sbc(h); };
 void Cpu::opcode_9D() { Cpu::instr_sbc(l); };
-void Cpu::opcode_9E() { Cpu::instr_sbc(hl); };
+void Cpu::opcode_9E() { Cpu::instr_sbc(hl.get()); };
 void Cpu::opcode_9F() { Cpu::instr_sbc(a); };
 void Cpu::opcode_A0() { Cpu::instr_and(b); };
 void Cpu::opcode_A1() { Cpu::instr_and(c); };
@@ -178,7 +178,7 @@ void Cpu::opcode_A2() { Cpu::instr_and(d); };
 void Cpu::opcode_A3() { Cpu::instr_and(e); };
 void Cpu::opcode_A4() { Cpu::instr_and(h); };
 void Cpu::opcode_A5() { Cpu::instr_and(l); };
-void Cpu::opcode_A6() { Cpu::instr_and(hl); };
+void Cpu::opcode_A6() { Cpu::instr_and(hl.get()); };
 void Cpu::opcode_A7() { Cpu::instr_and(a); };
 void Cpu::opcode_A8() { Cpu::instr_xor(b); };
 void Cpu::opcode_A9() { Cpu::instr_xor(c); };
@@ -186,7 +186,7 @@ void Cpu::opcode_AA() { Cpu::instr_xor(d); };
 void Cpu::opcode_AB() { Cpu::instr_xor(e); };
 void Cpu::opcode_AC() { Cpu::instr_xor(h); };
 void Cpu::opcode_AD() { Cpu::instr_xor(l); };
-void Cpu::opcode_AE() { Cpu::instr_xor(hl); };
+void Cpu::opcode_AE() { Cpu::instr_xor(hl.get()); };
 void Cpu::opcode_AF() { Cpu::instr_xor(a); };
 void Cpu::opcode_B0() { Cpu::instr_or(b); };
 void Cpu::opcode_B1() { Cpu::instr_or(c); };
@@ -194,7 +194,7 @@ void Cpu::opcode_B2() { Cpu::instr_or(d); };
 void Cpu::opcode_B3() { Cpu::instr_or(e); };
 void Cpu::opcode_B4() { Cpu::instr_or(h); };
 void Cpu::opcode_B5() { Cpu::instr_or(l); };
-void Cpu::opcode_B6() { Cpu::instr_or(hl); };
+void Cpu::opcode_B6() { Cpu::instr_or(hl.get()); };
 void Cpu::opcode_B7() { Cpu::instr_or(a); };
 void Cpu::opcode_B8() { Cpu::instr_cp(b); };
 void Cpu::opcode_B9() { Cpu::instr_cp(c); };
@@ -202,7 +202,7 @@ void Cpu::opcode_BA() { Cpu::instr_cp(d); };
 void Cpu::opcode_BB() { Cpu::instr_cp(e); };
 void Cpu::opcode_BC() { Cpu::instr_cp(h); };
 void Cpu::opcode_BD() { Cpu::instr_cp(l); };
-void Cpu::opcode_BE() { Cpu::instr_cp(hl); };
+void Cpu::opcode_BE() { Cpu::instr_cp(hl.get()); };
 void Cpu::opcode_BF() { Cpu::instr_cp(a); };
 void Cpu::opcode_C0(){};
 void Cpu::opcode_C1() { Cpu::instr_pop_nn(bc); };

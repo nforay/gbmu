@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 18:43:49 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 19:04:41 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,28 +97,28 @@ public:
 
     /* 8bit arithmetic/logical instructions */
     void instr_add(const Reg::Byte &src);
-    void instr_add(const Reg::BytePair &src);
+    void instr_add(const uint16_t &addr);
     void instr_add_n();
     void instr_adc(const Reg::Byte &src);
-    void instr_adc(const Reg::BytePair &src);
+    void instr_adc(const uint16_t &addr);
     void instr_adc_n();
     void instr_sub(const Reg::Byte &src);
-    void instr_sub(const Reg::BytePair &src);
+    void instr_sub(const uint16_t &addr);
     void instr_sub_n();
     void instr_sbc(const Reg::Byte &src);
-    void instr_sbc(const Reg::BytePair &src);
+    void instr_sbc(const uint16_t &addr);
     void instr_sbc_n();
     void instr_and(const Reg::Byte &src);
-    void instr_and(const Reg::BytePair &src);
+    void instr_and(const uint16_t &addr);
     void instr_and_n();
     void instr_or(const Reg::Byte &src);
-    void instr_or(const Reg::BytePair &src);
+    void instr_or(const uint16_t &addr);
     void instr_or_n();
     void instr_xor(const Reg::Byte &src);
-    void instr_xor(const Reg::BytePair &src);
+    void instr_xor(const uint16_t &addr);
     void instr_xor_n();
     void instr_cp(const Reg::Byte &src);
-    void instr_cp(const Reg::BytePair &src);
+    void instr_cp(const uint16_t &addr);
     void instr_cp_n();
     void instr_inc(Reg::Byte &src);
     void instr_inc(const uint16_t &addr);
