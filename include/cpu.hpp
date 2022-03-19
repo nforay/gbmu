@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 02:50:20 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 14:39:07 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@ public:
 
     Reg::Byte a, b, c, d, e, h, l;
 
-    Reg::Word bc, de, hl; // TODO: pair Bytes + handle inc(), dec() (merge first), add get() & set() from uint16_t
+    Reg::BytePair bc = Reg::BytePair(b, c);
+    Reg::BytePair de = Reg::BytePair(d, e);
+    Reg::BytePair hl = Reg::BytePair(h, l);
 
     Reg::Word pc, sp; // Program Counter, Stack Pointer
 
@@ -68,7 +70,7 @@ public:
     /* 8bit load/store/move instructions */
     void instr_ld(Reg::Byte &dst);
     void instr_ld(Reg::Byte &dst, const Reg::Byte &src);
-    void instr_ld(Reg::Byte &dst, const Reg::Word &src); // TODO: optimise, no need to construct a new word ?
+    void instr_ld(Reg::Byte &dst, const Reg::BytePair &src);
     void instr_ld(const Reg::Word &dst, const Reg::Byte &src);
     void instr_ld(const Reg::Word &dst);
     void instr_ld_nn_from(Reg::Byte &dst);
@@ -83,8 +85,8 @@ public:
     void instr_ld_a_n(Reg::Byte &a);
 
     /* 16bit load/store/move instructions */
-    void instr_ld(Reg::Word &dst);
-    void instr_ld(Reg::Word &dst, const Reg::Word &src);
+    void instr_ld(Reg::BytePair &dst);
+    void instr_ld(Reg::Word &dst, const Reg::BytePair &src);
     void instr_ld_hl_sp_n();
     void instr_ld_nn_sp();
 

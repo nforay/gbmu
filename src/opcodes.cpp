@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 02:45:31 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 14:34:42 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void Cpu::opcode_06() { Cpu::instr_ld(b); };
 void Cpu::opcode_07(){};
 void Cpu::opcode_08() { Cpu::instr_ld_nn_sp(); };
 void Cpu::opcode_09(){};
-void Cpu::opcode_0A() { Cpu::instr_ld(a, Reg::Word(b, c)); };
+void Cpu::opcode_0A() { Cpu::instr_ld(a, bc); };
 void Cpu::opcode_0B(){};
 void Cpu::opcode_0C(){};
 void Cpu::opcode_0D(){};
@@ -38,7 +38,7 @@ void Cpu::opcode_16() { Cpu::instr_ld(d); };
 void Cpu::opcode_17(){};
 void Cpu::opcode_18(){};
 void Cpu::opcode_19(){};
-void Cpu::opcode_1A() { Cpu::instr_ld(a, Reg::Word(d, e)); };
+void Cpu::opcode_1A() { Cpu::instr_ld(a, de); };
 void Cpu::opcode_1B(){};
 void Cpu::opcode_1C(){};
 void Cpu::opcode_1D(){};
@@ -82,7 +82,7 @@ void Cpu::opcode_43() { Cpu::instr_ld(b, d); };
 void Cpu::opcode_42() { Cpu::instr_ld(b, e); };
 void Cpu::opcode_44() { Cpu::instr_ld(b, h); };
 void Cpu::opcode_45() { Cpu::instr_ld(b, l); };
-void Cpu::opcode_46() { Cpu::instr_ld(b, Reg::Word(h, l)); };
+void Cpu::opcode_46() { Cpu::instr_ld(b, hl); };
 void Cpu::opcode_47() { Cpu::instr_ld(b, a); };
 void Cpu::opcode_48() { Cpu::instr_ld(c, b); };
 void Cpu::opcode_4A() { Cpu::instr_ld(c, c); };
@@ -90,7 +90,7 @@ void Cpu::opcode_49() { Cpu::instr_ld(c, d); };
 void Cpu::opcode_4B() { Cpu::instr_ld(c, e); };
 void Cpu::opcode_4C() { Cpu::instr_ld(c, h); };
 void Cpu::opcode_4D() { Cpu::instr_ld(c, l); };
-void Cpu::opcode_4E() { Cpu::instr_ld(c, Reg::Word(h, l)); };
+void Cpu::opcode_4E() { Cpu::instr_ld(c, hl); };
 void Cpu::opcode_4F() { Cpu::instr_ld(c, a); };
 void Cpu::opcode_50() { Cpu::instr_ld(d, b); };
 void Cpu::opcode_51() { Cpu::instr_ld(d, c); };
@@ -98,7 +98,7 @@ void Cpu::opcode_52() { Cpu::instr_ld(d, d); };
 void Cpu::opcode_53() { Cpu::instr_ld(d, e); };
 void Cpu::opcode_54() { Cpu::instr_ld(d, h); };
 void Cpu::opcode_55() { Cpu::instr_ld(d, l); };
-void Cpu::opcode_56() { Cpu::instr_ld(d, Reg::Word(h, l)); };
+void Cpu::opcode_56() { Cpu::instr_ld(d, hl); };
 void Cpu::opcode_57() { Cpu::instr_ld(d, a); };
 void Cpu::opcode_58() { Cpu::instr_ld(e, b); };
 void Cpu::opcode_59() { Cpu::instr_ld(e, c); };
@@ -106,7 +106,7 @@ void Cpu::opcode_5A() { Cpu::instr_ld(e, d); };
 void Cpu::opcode_5B() { Cpu::instr_ld(e, e); };
 void Cpu::opcode_5C() { Cpu::instr_ld(e, h); };
 void Cpu::opcode_5D() { Cpu::instr_ld(e, l); };
-void Cpu::opcode_5E() { Cpu::instr_ld(e, Reg::Word(h, l)); };
+void Cpu::opcode_5E() { Cpu::instr_ld(e, hl); };
 void Cpu::opcode_5F() { Cpu::instr_ld(e, a); };
 void Cpu::opcode_60() { Cpu::instr_ld(h, b); };
 void Cpu::opcode_61() { Cpu::instr_ld(h, c); };
@@ -114,7 +114,7 @@ void Cpu::opcode_62() { Cpu::instr_ld(h, d); };
 void Cpu::opcode_63() { Cpu::instr_ld(h, e); };
 void Cpu::opcode_64() { Cpu::instr_ld(h, h); };
 void Cpu::opcode_65() { Cpu::instr_ld(h, l); };
-void Cpu::opcode_66() { Cpu::instr_ld(h, Reg::Word(h, l)); };
+void Cpu::opcode_66() { Cpu::instr_ld(h, hl); };
 void Cpu::opcode_67() { Cpu::instr_ld(h, a); };
 void Cpu::opcode_68() { Cpu::instr_ld(l, b); };
 void Cpu::opcode_69() { Cpu::instr_ld(l, c); };
@@ -122,7 +122,7 @@ void Cpu::opcode_6A() { Cpu::instr_ld(l, d); };
 void Cpu::opcode_6B() { Cpu::instr_ld(l, e); };
 void Cpu::opcode_6C() { Cpu::instr_ld(l, h); };
 void Cpu::opcode_6D() { Cpu::instr_ld(l, l); };
-void Cpu::opcode_6E() { Cpu::instr_ld(l, Reg::Word(h, l)); };
+void Cpu::opcode_6E() { Cpu::instr_ld(l, hl); };
 void Cpu::opcode_6F() { Cpu::instr_ld(l, a); };
 void Cpu::opcode_70() { Cpu::instr_ld(Reg::Word(h, l), b); };
 void Cpu::opcode_71() { Cpu::instr_ld(Reg::Word(h, l), c); };
@@ -138,7 +138,7 @@ void Cpu::opcode_7A() { Cpu::instr_ld(a, d); };
 void Cpu::opcode_7B() { Cpu::instr_ld(a, e); };
 void Cpu::opcode_7C() { Cpu::instr_ld(a, h); };
 void Cpu::opcode_7D() { Cpu::instr_ld(a, l); };
-void Cpu::opcode_7E() { Cpu::instr_ld(a, Reg::Word(h, l)); };
+void Cpu::opcode_7E() { Cpu::instr_ld(a, hl); };
 void Cpu::opcode_7F() { Cpu::instr_ld(a, a); };
 void Cpu::opcode_80(){};
 void Cpu::opcode_81(){};

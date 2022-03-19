@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 02:52:38 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 14:32:36 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void Cpu::instr_ld(Reg::Byte &dst, const Reg::Byte &src) { dst.set(src.get()); }
  * @param      dst  The 8-bit destination register
  * @param      src  The 16-bit source register pair (HL)
  */
-void Cpu::instr_ld(Reg::Byte &dst, const Reg::Word &src) { dst.set(Cpu::read(src.get())); };
+void Cpu::instr_ld(Reg::Byte &dst, const Reg::BytePair &src) { dst.set(Cpu::read(src.get())); };
 
 /**
  * @brief      Write value from src at dst.
@@ -131,9 +131,8 @@ void Cpu::instr_ld_c_a(const Reg::Byte &c, const Reg::Byte &a) {
  * @param      dst The 8-bit A register
  */
 void Cpu::instr_ld_a_hld(Reg::Byte &a) {
-    uint8_t value = Cpu::read(Reg::Word(h, l).get()); // TODO: optimise, no need to construct a new word ?
-    a.set(value);
-    hl.dec(); // BUG: hl not linked with Bytes h & l
+    a.set(Cpu::read(hl.get()));
+    hl.dec();
 };
 
 /**
@@ -142,8 +141,8 @@ void Cpu::instr_ld_a_hld(Reg::Byte &a) {
  * @param      dst The 8-bit A register
  */
 void Cpu::instr_ld_hld_a(Reg::Byte &a) {
-    Cpu::write(Reg::Word(h, l).get(), a.get()); // TODO: optimise, no need to construct a new word ?
-    hl.dec();                                   // BUG: hl not linked with Bytes h & l
+    Cpu::write(hl.get(), a.get());
+    hl.dec();
 };
 
 /**
@@ -152,9 +151,8 @@ void Cpu::instr_ld_hld_a(Reg::Byte &a) {
  * @param      dst The 8-bit A register
  */
 void Cpu::instr_ld_a_hli(Reg::Byte &a) {
-    uint8_t value = Cpu::read(Reg::Word(h, l).get()); // TODO: optimise, no need to construct a new word ?
-    a.set(value);
-    hl.inc(); // BUG: hl not linked with Bytes h & l
+    a.set(Cpu::read(hl.get()));
+    hl.inc();
 };
 
 /**
@@ -163,8 +161,8 @@ void Cpu::instr_ld_a_hli(Reg::Byte &a) {
  * @param      dst The 8-bit A register
  */
 void Cpu::instr_ld_hli_a(Reg::Byte &a) {
-    Cpu::write(Reg::Word(h, l).get(), a.get()); // TODO: optimise, no need to construct a new word ?
-    hl.inc();                                   // BUG: hl not linked with Bytes h & l
+    Cpu::write(hl.get(), a.get());
+    hl.inc();
 };
 
 
@@ -192,12 +190,12 @@ void Cpu::instr_ld_a_n(Reg::Byte &a) {
  * @brief      Put 16-bit immediate value into Word dst.
  * @param      dst The 16-bit register pair
  */
-void Cpu::instr_ld(Reg::Word &dst) {
-    uint8_t low = Cpu::read(pc.get());
+void Cpu::instr_ld(Reg::BytePair &dst) {
+    uint16_t value = Cpu::read(pc.get());
     pc.inc();
-    uint8_t high = Cpu::read(pc.get());
+    value |= (Cpu::read(pc.get()) << 8);
     pc.inc();
-    dst.set(Reg::Word(high, low).get()); // BUG: Word not linked with Bytes
+    dst.set(value);
 };
 
 /**
@@ -205,7 +203,7 @@ void Cpu::instr_ld(Reg::Word &dst) {
  * @param      dst The 16-bit Word SP
  * @param      src The 16-bit register pair HL
  */
-void Cpu::instr_ld(Reg::Word &dst, const Reg::Word &src) { dst.set(src.get()); };
+void Cpu::instr_ld(Reg::Word &dst, const Reg::BytePair &src) { dst.set(src.get()); };
 
 /**
  * @brief      Put SP + n (immediate value) effective address into HL.
