@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 02:28:56 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 02:52:38 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,31 @@ void Cpu::instr_ld(Reg::Word &dst) {
  * @param      dst The 16-bit Word SP
  * @param      src The 16-bit register pair HL
  */
-void Cpu::instr_ld(Reg::Word &dst, const Reg::Word &src){};
+void Cpu::instr_ld(Reg::Word &dst, const Reg::Word &src) { dst.set(src.get()); };
+
+/**
+ * @brief      Put SP + n (immediate value) effective address into HL.
+ */
+void Cpu::instr_ld_hl_sp_n() {
+    uint8_t n = Cpu::read(pc.get());
+    pc.inc();
+    hl.set(sp.get() + n);
+    f.set_zero(0);
+    f.set_sub(0);
+    f.set_half_carry(0); // check behaviour
+    f.set_carry(0);      // check behaviour
+};
+
+/**
+ * @brief      Put Stack Pointer (SP) at address n.
+ */
+void Cpu::instr_ld_nn_sp() {
+    uint8_t low = Cpu::read(pc.get());
+    pc.inc();
+    uint8_t high = Cpu::read(pc.get());
+    pc.inc();
+    Cpu::write(Reg::Word(high, low).get(), sp.get());
+};
 
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};
@@ -219,7 +243,6 @@ void Cpu::instr_reti(){};
 void Cpu::instr_call(){};
 void Cpu::instr_call(Cpu::Condition cond){};
 void Cpu::instr_rst(){};
-void Cpu::instr_ld(uint16_t){};
 void Cpu::instr_inc(uint8_t){};
 void Cpu::instr_inc(uint16_t){};
 void Cpu::instr_dec(uint8_t){};

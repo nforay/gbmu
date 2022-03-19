@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 02:02:47 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 02:45:31 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void Cpu::opcode_04(){};
 void Cpu::opcode_05(){};
 void Cpu::opcode_06() { Cpu::instr_ld(b); };
 void Cpu::opcode_07(){};
-void Cpu::opcode_08(){};
+void Cpu::opcode_08() { Cpu::instr_ld_nn_sp(); };
 void Cpu::opcode_09(){};
 void Cpu::opcode_0A() { Cpu::instr_ld(a, Reg::Word(b, c)); };
 void Cpu::opcode_0B(){};
@@ -261,7 +261,7 @@ void Cpu::opcode_F5(){};
 void Cpu::opcode_F6(){};
 void Cpu::opcode_F7(){};
 void Cpu::opcode_F8(){};
-void Cpu::opcode_F9(){};
+void Cpu::opcode_F9() { Cpu::instr_ld(sp, hl); };
 void Cpu::opcode_FA() { Cpu::instr_ld_nn_from(a); };
 void Cpu::opcode_FB() { Cpu::instr_di(); };
 void Cpu::opcode_FC(){};
