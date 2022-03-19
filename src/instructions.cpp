@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 17:55:18 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 18:13:14 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,6 +404,74 @@ void Cpu::instr_sbc_n() {
     a.set(value);
 };
 
+/**
+ * @brief      Logically AND n with A, result in A.
+ */
+void Cpu::instr_and(const Reg::Byte &src) {
+    a.set(a.get() & src.get());
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(1);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Logically AND value at Register Pair (HL) with A, result in A.
+ */
+void Cpu::instr_and(const Reg::BytePair &src) {
+    a.set(a.get() & read(src.get()));
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(1);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Logically AND value at 16-bit nn (immediate address) with A, result in A.
+ */
+void Cpu::instr_and_n() {
+    a.set(a.get() & read(pc.get()));
+    pc.inc();
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(1);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Logically OR n with A, result in A.
+ */
+void Cpu::instr_or(const Reg::Byte &src) {
+    a.set(a.get() | src.get());
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Logically OR value at Register Pair (HL) with A, result in A.
+ */
+void Cpu::instr_or(const Reg::BytePair &src) {
+    a.set(a.get() | read(src.get()));
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(0);
+};
+
+/**
+ * @brief      Logically OR value at 16-bit nn (immediate address) with A, result in A.
+ */
+void Cpu::instr_or_n() {
+    a.set(a.get() | read(pc.get()));
+    pc.inc();
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(0);
+};
+
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};
 void Cpu::instr_jr(Cpu::Condition cond){};
@@ -425,12 +493,8 @@ void Cpu::instr_scf(){};
 void Cpu::instr_cpl(){};
 void Cpu::instr_ccf(){};
 void Cpu::instr_sbc(){};
-void Cpu::instr_and(uint8_t){};
-void Cpu::instr_and(uint16_t){};
 void Cpu::instr_xor(uint8_t){};
 void Cpu::instr_xor(uint16_t){};
-void Cpu::instr_or(uint8_t){};
-void Cpu::instr_or(uint16_t){};
 void Cpu::instr_cp(){};
 void Cpu::instr_inc(Reg::Word){};
 void Cpu::instr_add(Reg::Word){};
