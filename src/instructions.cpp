@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 20:19:03 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 22:54:14 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -732,6 +732,300 @@ void Cpu::instr_swap(const uint16_t &addr) {
     f.set_carry(0);
 };
 
+/**
+ * @brief      Rotate A left. Old bit 7 to Carry flag.
+ */
+void Cpu::instr_rlca() {
+    uint8_t tmp = a.get();
+    f.set_carry((tmp & 0x80) >> 7);
+    tmp = (tmp << 1) | (f.get_carry() ? 1 : 0);
+    a.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Rotate A left through Carry flag.
+ */
+void Cpu::instr_rla() {
+    uint8_t tmp = a.get();
+    uint8_t c   = f.get_carry();
+    tmp         = (tmp << 1) | c;
+    a.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry((tmp & 0x80) >> 7);
+};
+
+/**
+ * @brief      Rotate A right. Old bit 0 to Carry flag.
+ */
+void Cpu::instr_rrca() {
+    uint8_t tmp = a.get();
+    f.set_carry(tmp & 0x01);
+    tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
+    a.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Rotate A right through Carry flag.
+ */
+void Cpu::instr_rra() {
+    uint8_t tmp = a.get();
+    uint8_t c   = f.get_carry();
+    tmp         = (tmp >> 1) | (c ? 0x80 : 0);
+    a.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(tmp & 0x01);
+};
+
+/**
+ * @brief      Rotate n left. Old bit 7 to Carry flag.
+ */
+void Cpu::instr_rlc(Reg::Byte &src) {
+    uint8_t tmp = src.get();
+    f.set_carry((tmp & 0x80) >> 7);
+    tmp = (tmp << 1) | (f.get_carry() ? 1 : 0);
+    src.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Rotate n left. Old bit 7 to Carry flag.
+ */
+void Cpu::instr_rlc(const uint16_t &addr) {
+    uint8_t tmp = read(addr);
+    f.set_carry((tmp & 0x80) >> 7);
+    tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Rotate n left through Carry flag.
+ */
+void Cpu::instr_rl(Reg::Byte &src) {
+    uint8_t tmp = src.get();
+    uint8_t c   = f.get_carry();
+    tmp         = (tmp << 1) | c;
+    src.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry((tmp & 0x80) >> 7);
+};
+
+/**
+ * @brief      Rotate n left through Carry flag.
+ */
+void Cpu::instr_rl(const uint16_t &addr) {
+    uint8_t tmp = read(addr);
+    uint8_t c   = f.get_carry();
+    tmp         = (tmp << 1) | c;
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry((tmp & 0x80) >> 7);
+};
+
+/**
+ * @brief      Rotate n right. Old bit 0 to Carry flag.
+ */
+void Cpu::instr_rrc(Reg::Byte &src) {
+    uint8_t tmp = src.get();
+    f.set_carry(tmp & 0x01);
+    tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
+    src.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Rotate n right. Old bit 0 to Carry flag.
+ */
+void Cpu::instr_rrc(const uint16_t &addr) {
+    uint8_t tmp = read(addr);
+    f.set_carry(tmp & 0x01);
+    tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Rotate n right through Carry flag.g.
+ */
+void Cpu::instr_rr(Reg::Byte &src) {
+    uint8_t tmp = src.get();
+    uint8_t c   = f.get_carry();
+    tmp         = (tmp >> 1) | (c ? 0x80 : 0);
+    src.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(tmp & 0x01);
+};
+
+/**
+ * @brief      Rotate n right through Carry flag.
+ */
+void Cpu::instr_rr(const uint16_t &addr) {
+    uint8_t tmp = read(addr);
+    uint8_t c   = f.get_carry();
+    tmp         = (tmp >> 1) | (c ? 0x80 : 0);
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+    f.set_carry(tmp & 0x01);
+};
+
+/**
+ * @brief      Shift n left into Carry. LSB of n set to 0.
+ */
+void Cpu::instr_sla(Reg::Byte &src) {
+    uint8_t tmp = src.get();
+    f.set_carry((tmp & 0x80) >> 7);
+    tmp = (tmp << 1);
+    src.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Shift n left into Carry. LSB of n set to 0.
+ */
+void Cpu::instr_sla(const uint16_t &addr) {
+    uint8_t tmp = read(addr);
+    f.set_carry((tmp & 0x80) >> 7);
+    tmp = (tmp << 1);
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Shift n right into Carry. MSB doesn't change.
+ */
+void Cpu::instr_sra(Reg::Byte &src) {
+    uint8_t tmp = src.get();
+    f.set_carry(tmp & 0x01);
+    tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
+    src.set(tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Shift n right into Carry. MSB doesn't change.
+ */
+void Cpu::instr_sra(const uint16_t &addr) {
+    uint8_t tmp = read(addr);
+    f.set_carry(tmp & 0x01);
+    tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
+    write(addr, tmp);
+    f.set_zero(tmp == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Shift n right into Carry. MSB set to 0.
+ */
+void Cpu::instr_srl(Reg::Byte &src) {
+    bool least_bit = src.get() & 0x01;
+    f.set_carry(least_bit);
+    src.set(src.get() >> 1);
+    f.set_zero(src.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Shift n right into Carry. MSB set to 0.
+ */
+void Cpu::instr_srl(const uint16_t &addr) {
+    bool least_bit = read(addr) & 0x01;
+    f.set_carry(least_bit);
+    write(addr, read(addr) >> 1);
+    f.set_zero(read(addr) == 0);
+    f.set_sub(0);
+    f.set_half_carry(0);
+};
+
+/**
+ * @brief      Test bit b in register r.
+ * Use with: b = 0 - 7, r = A,B,C,D,E,H,L
+ * @param      b      Bit to test.
+ * @param      reg    Register to test.
+ */
+void Cpu::instr_bit(uint8_t b, Reg::Byte &reg) {
+    f.set_zero(!(reg.get() & (1 << b)));
+    f.set_sub(0);
+    f.set_half_carry(1);
+};
+
+/**
+ * @brief      Test bit b at address addr.
+ * Use with: b = 0 - 7, addr = (HL)
+ * @param      b        Bit to test.
+ * @param      addr     16-bit address to test.
+ */
+void Cpu::instr_bit(uint8_t b, const uint16_t &addr) {
+    f.set_zero(!(read(addr) & (1 << b)));
+    f.set_sub(0);
+    f.set_half_carry(1);
+};
+
+/**
+ * @brief      Set bit b in register r.
+ * Use with: b = 0 - 7, r = A,B,C,D,E,H,L
+ * @param      b      Bit to set.
+ * @param      reg    Register to set.
+ */
+void Cpu::instr_set(uint8_t b, Reg::Byte &reg) { reg.set(reg.get() | (1 << b)); };
+
+/**
+ * @brief      Set bit b in register r.
+ * Use with: b = 0 - 7, addr = (HL)
+ * @param      b        Bit to set.
+ * @param      addr     16-bit address to set.
+ */
+void Cpu::instr_set(uint8_t b, const uint16_t &addr) { write(addr, read(addr) | (1 << b)); };
+
+/**
+ * @brief      Reset bit b in register r.
+ * Use with: b = 0 - 7, r = A,B,C,D,E,H,L
+ * @param      b      Bit to reset.
+ * @param      reg    Register to reset.
+ */
+void Cpu::instr_res(uint8_t b, Reg::Byte &reg) { reg.set(reg.get() & ~(1 << b)); };
+
+/**
+ * @brief      Reset bit b in register r.
+ * Use with: b = 0 - 7, addr = (HL)
+ * @param      b        Bit to reset.
+ * @param      addr     16-bit address to reset.
+ */
+void Cpu::instr_res(uint8_t b, const uint16_t &addr) { write(addr, read(addr) & ~(1 << b)); };
+
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};
 void Cpu::instr_jr(Cpu::Condition cond){};
@@ -744,17 +1038,3 @@ void Cpu::instr_reti(){};
 void Cpu::instr_call(){};
 void Cpu::instr_call(Cpu::Condition cond){};
 void Cpu::instr_rst(){};
-void Cpu::instr_rlca(){};
-void Cpu::instr_rla(){};
-void Cpu::instr_rrca(){};
-void Cpu::instr_rra(){};
-void Cpu::instr_rlc(){};
-void Cpu::instr_rl(){};
-void Cpu::instr_rrc(){};
-void Cpu::instr_rr(){};
-void Cpu::instr_sla(){};
-void Cpu::instr_sra(){};
-void Cpu::instr_srl(){};
-void Cpu::instr_bit(){};
-void Cpu::instr_res(){};
-void Cpu::instr_set(){};

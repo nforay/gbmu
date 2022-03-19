@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 19:52:35 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 22:55:53 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,6 @@ public:
     void instr_inc(const uint16_t &addr);
     void instr_dec(Reg::Byte &src);
     void instr_dec(const uint16_t &addr);
-
     void instr_daa();
     void instr_scf();
     void instr_cpl();
@@ -142,21 +141,30 @@ public:
     /* 	8bit rotations/shifts and bit instructions */
     void instr_swap(Reg::Byte &src);
     void instr_swap(const uint16_t &addr);
-
     void instr_rlca();
     void instr_rla();
     void instr_rrca();
     void instr_rra();
-    void instr_rlc();
-    void instr_rl();
-    void instr_rrc();
-    void instr_rr();
-    void instr_sla();
-    void instr_sra();
-    void instr_srl();
-    void instr_bit();
-    void instr_res();
-    void instr_set();
+    void instr_rlc(Reg::Byte &src);
+    void instr_rlc(const uint16_t &addr);
+    void instr_rl(Reg::Byte &src);
+    void instr_rl(const uint16_t &addr);
+    void instr_rrc(Reg::Byte &src);
+    void instr_rrc(const uint16_t &addr);
+    void instr_rr(Reg::Byte &src);
+    void instr_rr(const uint16_t &addr);
+    void instr_sla(Reg::Byte &src);
+    void instr_sla(const uint16_t &addr);
+    void instr_sra(Reg::Byte &src);
+    void instr_sra(const uint16_t &addr);
+    void instr_srl(Reg::Byte &src);
+    void instr_srl(const uint16_t &addr);
+    void instr_bit(uint8_t b, Reg::Byte &reg);
+    void instr_bit(uint8_t b, const uint16_t &addr);
+    void instr_set(uint8_t b, Reg::Byte &reg);
+    void instr_set(uint8_t b, const uint16_t &addr);
+    void instr_res(uint8_t b, Reg::Byte &reg);
+    void instr_res(uint8_t b, const uint16_t &addr);
 
     /* clang-format off */
     /* opcodes 8-bit loads */
