@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 15:44:16 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 17:18:16 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,14 @@ public:
     void instr_pop_nn(Reg::BytePair &src);
 
     /* 8bit arithmetic/logical instructions */
+    void instr_add(const Reg::Byte &src);
+    void instr_add(const Reg::BytePair &src);
+    void instr_add_n();
+    void instr_adc(const Reg::Byte &src);
+    void instr_adc(const Reg::BytePair &src);
+    void instr_adc_n();
+
+
     void instr_inc(uint8_t);
     void instr_inc(uint16_t);
     void instr_dec(uint8_t);
@@ -104,7 +112,6 @@ public:
     void instr_scf();
     void instr_cpl();
     void instr_ccf();
-    void instr_add();
     void instr_adc();
     void instr_sub();
     void instr_sbc();

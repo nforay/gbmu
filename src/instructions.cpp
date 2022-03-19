@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 15:42:15 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 17:20:41 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ void Cpu::instr_di(){}; // TODO: Implement
  * immediately. Interrupts are enabled after instruction after EI is executed.
  */
 void Cpu::instr_ei(){}; // TODO: Implement
+
+/**
+ * 8bit load/store/move instructions *******************************************
+ */
 
 /**
  * @brief      Put value at pc into register
@@ -242,6 +246,84 @@ void Cpu::instr_push_nn(const Reg::BytePair &src) { Cpu::push(src); };
  */
 void Cpu::instr_pop_nn(Reg::BytePair &src) { Cpu::pop(src); };
 
+/**
+ * 8bit arithmetic/logical instructions ****************************************
+ */
+
+/**
+ * @brief      Add n to A.
+ */
+void Cpu::instr_add(const Reg::Byte &src) {
+    uint16_t value = a.get() + src.get();
+    a.set(value & 0x00FF);
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(value > 0xF); // check behaviour
+    f.set_carry(value & 0x100);    // check behaviour
+};
+
+/**
+ * @brief      Add value at Register Pair (HL) to A.
+ */
+void Cpu::instr_add(const Reg::BytePair &src) {
+    uint16_t value = a.get() + read(src.get());
+    a.set(value & 0x00FF);
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(value > 0xF); // check behaviour
+    f.set_carry(value & 0x100);    // check behaviour
+};
+
+/**
+ * @brief      Add value at 16-bit nn (immediate address) to A.
+ */
+void Cpu::instr_add_n() {
+    uint16_t value = a.get() + read(pc.get());
+    pc.inc();
+    a.set(value & 0x00FF);
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(value > 0xF); // check behaviour
+    f.set_carry(value & 0x100);    // check behaviour
+};
+
+/**
+ * @brief      Add n + Carry flag to A.
+ */
+void Cpu::instr_adc(const Reg::Byte &src) {
+    uint16_t value = a.get() + src.get() + f.get_carry();
+    a.set(value & 0x00FF);
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(value > 0xF); // check behaviour
+    f.set_carry(value & 0x100);    // check behaviour
+};
+
+/**
+ * @brief      Add value at Register Pair (HL) + Carry flag to A.
+ */
+void Cpu::instr_adc(const Reg::BytePair &src) {
+    uint16_t value = a.get() + read(src.get()) + f.get_carry();
+    a.set(value & 0x00FF);
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(value > 0xF); // check behaviour
+    f.set_carry(value & 0x100);    // check behaviour
+};
+
+/**
+ * @brief      Add value at 16-bit nn (immediate address) + Carry flag to A.
+ */
+void Cpu::instr_adc_n() {
+    uint16_t value = a.get() + read(pc.get()) + f.get_carry();
+    pc.inc();
+    a.set(value & 0x00FF);
+    f.set_zero(a.get() == 0);
+    f.set_sub(0);
+    f.set_half_carry(value > 0xF); // check behaviour
+    f.set_carry(value & 0x100);    // check behaviour
+};
+
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};
 void Cpu::instr_jr(Cpu::Condition cond){};
@@ -262,8 +344,6 @@ void Cpu::instr_daa(){};
 void Cpu::instr_scf(){};
 void Cpu::instr_cpl(){};
 void Cpu::instr_ccf(){};
-void Cpu::instr_add(){};
-void Cpu::instr_adc(){};
 void Cpu::instr_sub(){};
 void Cpu::instr_sbc(){};
 void Cpu::instr_and(uint8_t){};
