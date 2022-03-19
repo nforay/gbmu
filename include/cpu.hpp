@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 23:09:54 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 02:23:57 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ public:
 
     Reg::Byte a, b, c, d, e, h, l;
 
+    Reg::Word bc, de, hl; // tmp
+
     Reg::Word pc, sp; // Program Counter, Stack Pointer
 
     /* instructions */
@@ -69,6 +71,19 @@ public:
     void instr_ld(Reg::Byte &dst, const Reg::Word &src); // TODO: optimise, no need to construct a new word ?
     void instr_ld(const Reg::Word &dst, const Reg::Byte &src);
     void instr_ld(const Reg::Word &dst);
+    void instr_ld_nn_from(Reg::Byte &dst);
+    void instr_ld_nn_to(Reg::Byte &dst);
+    void instr_ld_a_c(Reg::Byte &a, const Reg::Byte &c);
+    void instr_ld_c_a(const Reg::Byte &c, const Reg::Byte &a);
+    void instr_ld_a_hld(Reg::Byte &a);
+    void instr_ld_hld_a(Reg::Byte &a);
+    void instr_ld_a_hli(Reg::Byte &a);
+    void instr_ld_hli_a(Reg::Byte &a);
+    void instr_ld_n_a(const Reg::Byte &a);
+    void instr_ld_a_n(Reg::Byte &a);
+    void instr_ld(Reg::Word &dst);
+    void instr_ld(Reg::Word &dst, const Reg::Word &src);
+
 
     /* 16bit load/store/move instructions */
     void instr_ld(uint16_t);

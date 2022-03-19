@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 23:12:05 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 02:28:56 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void Cpu::instr_ei(){}; // TODO: Implement
  */
 void Cpu::instr_ld(Reg::Byte &dst) {
     uint8_t value = Cpu::read(pc.get());
+    pc.inc();
     dst.set(value);
 };
 
@@ -80,6 +81,131 @@ void Cpu::instr_ld(const Reg::Word &dst) {
     uint8_t value = Cpu::read(pc.get());
     Cpu::write(dst.get(), value);
 };
+
+/**
+ * @brief      Write 8-bit value from 16-bit immediate value (LS byte 1st) to dst.
+ * @param      dst The 8-bit destination register
+ */
+void Cpu::instr_ld_nn_from(Reg::Byte &dst) {
+    uint8_t low = Cpu::read(pc.get());
+    pc.inc();
+    uint8_t high = Cpu::read(pc.get());
+    pc.inc();
+    dst.set(Cpu::read(Reg::Word(high, low).get())); // TODO: check behaviour
+};
+
+/**
+ * @brief      Write 8-bit value at 16-bit immediate address (LS byte 1st).
+ * @param      dst The 8-bit destination register
+ */
+void Cpu::instr_ld_nn_to(Reg::Byte &src) {
+    uint8_t low = Cpu::read(pc.get());
+    pc.inc();
+    uint8_t high = Cpu::read(pc.get());
+    pc.inc();
+    Cpu::write(Reg::Word(high, low).get(), src.get()); // TODO: check behaviour
+};
+
+/**
+ * @brief      Put value at address $FF00 + register C into A.
+ * @param      dst The 8-bit A register
+ * @param      dst The 8-bit C register
+ */
+void Cpu::instr_ld_a_c(Reg::Byte &a, const Reg::Byte &c) {
+    uint8_t value = Cpu::read(0xFF00 + c.get());
+    a.set(value);
+};
+
+/**
+ * @brief      Put A into address $FF00 + register C.
+ * @param      dst The 8-bit C register
+ * @param      dst The 8-bit A register
+ */
+void Cpu::instr_ld_c_a(const Reg::Byte &c, const Reg::Byte &a) {
+    Cpu::write(0xFF00 + c.get(), a.get());
+};
+
+/**
+ * @brief      Put value at address HL into A. Decrement HL.
+ * Same as: LD A,(HL) - DEC HL
+ * @param      dst The 8-bit A register
+ */
+void Cpu::instr_ld_a_hld(Reg::Byte &a) {
+    uint8_t value = Cpu::read(Reg::Word(h, l).get()); // TODO: optimise, no need to construct a new word ?
+    a.set(value);
+    hl.dec(); // BUG: hl not linked with Bytes h & l
+};
+
+/**
+ * @brief      Put A into memory address HL. Decrement HL.
+ * Same as: LD (HL),A - DEC HL
+ * @param      dst The 8-bit A register
+ */
+void Cpu::instr_ld_hld_a(Reg::Byte &a) {
+    Cpu::write(Reg::Word(h, l).get(), a.get()); // TODO: optimise, no need to construct a new word ?
+    hl.dec();                                   // BUG: hl not linked with Bytes h & l
+};
+
+/**
+ * @brief      Put value at address HL into A. Increment HL.
+ * Same as: LD A,(HL) - INC HL
+ * @param      dst The 8-bit A register
+ */
+void Cpu::instr_ld_a_hli(Reg::Byte &a) {
+    uint8_t value = Cpu::read(Reg::Word(h, l).get()); // TODO: optimise, no need to construct a new word ?
+    a.set(value);
+    hl.inc(); // BUG: hl not linked with Bytes h & l
+};
+
+/**
+ * @brief      Put A into memory address HL. Increment HL.
+ * Same as: LD (HL),A - INC HL
+ * @param      dst The 8-bit A register
+ */
+void Cpu::instr_ld_hli_a(Reg::Byte &a) {
+    Cpu::write(Reg::Word(h, l).get(), a.get()); // TODO: optimise, no need to construct a new word ?
+    hl.inc();                                   // BUG: hl not linked with Bytes h & l
+};
+
+
+/**
+ * @brief      Put A into memory address $FF00+n (one byte immediate value).
+ * @param      dst The 8-bit A register
+ */
+void Cpu::instr_ld_n_a(const Reg::Byte &a) {
+    uint8_t n = Cpu::read(pc.get());
+    pc.inc();
+    Cpu::write(0xFF00 + n, a.get());
+};
+
+/**
+ * @brief      Put memory address $FF00+n into A (one byte immediate value).
+ * @param      dst The 8-bit A register
+ */
+void Cpu::instr_ld_a_n(Reg::Byte &a) {
+    uint8_t n = Cpu::read(pc.get());
+    pc.inc();
+    a.set(Cpu::read(0xFF00 + n));
+};
+
+/**
+ * @brief      Put 16-bit immediate value into Word dst.
+ * @param      dst The 16-bit register pair
+ */
+void Cpu::instr_ld(Reg::Word &dst) {
+    uint8_t low = Cpu::read(pc.get());
+    pc.inc();
+    uint8_t high = Cpu::read(pc.get());
+    pc.inc();
+    dst.set(Reg::Word(high, low).get()); // BUG: Word not linked with Bytes
+};
+
+/**
+ * @brief      Put HL into Stack Pointer (SP).
+ * @param      dst The 16-bit Word SP
+ * @param      src The 16-bit register pair HL
+ */
+void Cpu::instr_ld(Reg::Word &dst, const Reg::Word &src){};
 
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};

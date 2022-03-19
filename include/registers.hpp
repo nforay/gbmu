@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:55:20 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 19:59:19 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/18 23:46:37 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ namespace Reg {
         bool    get_bit(uint8_t bit) const;
         void    set_bit(uint8_t bit, bool value);
         void    set(uint8_t value);
-
-        void reset();
+        void    inc();
+        void    dec();
+        void    reset();
 
     private:
         uint8_t _value = 0;
@@ -38,7 +39,6 @@ namespace Reg {
         bool get_sub() const;
         bool get_half_carry() const;
         bool get_carry() const;
-
         void set_zero(bool value);
         void set_sub(bool value);
         void set_half_carry(bool value);
@@ -50,16 +50,17 @@ namespace Reg {
         Word() = default;
         Word(uint16_t value);
         Word(Byte &high, Byte &low);
+        Word(const uint8_t &high, const uint8_t &low);
         ~Word();
 
         uint16_t get() const;
         bool     get_bit(uint8_t bit) const;
         void     set(uint16_t value);
-
-        void reset();
-
-        Byte low();
-        Byte high();
+        void     reset();
+        void     inc();
+        void     dec();
+        Byte     low();
+        Byte     high();
 
     private:
         uint16_t _value = 0;
