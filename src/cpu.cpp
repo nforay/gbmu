@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/18 20:11:29 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:28:57 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,18 @@ void Cpu::execute(uint8_t opcode, Reg::Word &pc) {
         }
         /* clang-format on */
     }
+}
+
+void Cpu::push(Reg::BytePair &data) {
+    write(sp.get(), data.high().get());
+    sp.inc();
+    write(sp.get(), data.low().get());
+    sp.inc();
+}
+
+void Cpu::pop(Reg::BytePair &data) {
+    data.low().set(read(sp.get()));
+    sp.dec();
+    data.high().set(read(sp.get()));
+    sp.dec();
 }

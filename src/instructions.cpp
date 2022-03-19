@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 14:49:10 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:36:32 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,7 @@ void Cpu::instr_ld_hl_sp_n() {
     hl.set(sp.get() + n);
     f.set_zero(0);
     f.set_sub(0);
+    // HACK: needs research
     f.set_half_carry(0); // check behaviour
     f.set_carry(0);      // check behaviour
 };
@@ -228,6 +229,18 @@ void Cpu::instr_ld_nn_sp() {
     pc.inc();
     Cpu::write(Reg::Word(high, low).get(), sp.get());
 };
+
+/**
+ * @brief      Push register pair nn onto stack.
+ * Decrement Stack Pointer (SP) twice.
+ */
+void Cpu::instr_push_nn(Reg::BytePair &src) { Cpu::push(src); };
+
+/**
+ * @brief      Pop two bytes off stack into register pair nn.
+ * Increment Stack Pointer (SP) twice.
+ */
+void Cpu::instr_pop_nn(Reg::BytePair &src) { Cpu::pop(src); };
 
 void Cpu::instr_cb(){};
 void Cpu::instr_jr(){};

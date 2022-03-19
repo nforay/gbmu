@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 14:34:42 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:40:34 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,11 +205,11 @@ void Cpu::opcode_BD(){};
 void Cpu::opcode_BE(){};
 void Cpu::opcode_BF(){};
 void Cpu::opcode_C0(){};
-void Cpu::opcode_C1(){};
+void Cpu::opcode_C1() { Cpu::instr_pop_nn(bc); };
 void Cpu::opcode_C2(){};
 void Cpu::opcode_C3(){};
 void Cpu::opcode_C4(){};
-void Cpu::opcode_C5(){};
+void Cpu::opcode_C5() { Cpu::instr_push_nn(bc); };
 void Cpu::opcode_C6(){};
 void Cpu::opcode_C7(){};
 void Cpu::opcode_C8(){};
@@ -221,11 +221,11 @@ void Cpu::opcode_CD(){};
 void Cpu::opcode_CE(){};
 void Cpu::opcode_CF(){};
 void Cpu::opcode_D0(){};
-void Cpu::opcode_D1(){};
+void Cpu::opcode_D1() { Cpu::instr_pop_nn(de); };
 void Cpu::opcode_D2(){};
 void Cpu::opcode_D3(){};
 void Cpu::opcode_D4(){};
-void Cpu::opcode_D5(){};
+void Cpu::opcode_D5() { Cpu::instr_push_nn(de); };
 void Cpu::opcode_D6(){};
 void Cpu::opcode_D7(){};
 void Cpu::opcode_D8(){};
@@ -237,11 +237,11 @@ void Cpu::opcode_DD(){};
 void Cpu::opcode_DE(){};
 void Cpu::opcode_DF(){};
 void Cpu::opcode_E0() { Cpu::instr_ld_n_a(a); };
-void Cpu::opcode_E1(){};
+void Cpu::opcode_E1() { Cpu::instr_pop_nn(hl); };
 void Cpu::opcode_E2() { Cpu::instr_ld_c_a(c, a); };
 void Cpu::opcode_E3(){};
 void Cpu::opcode_E4(){};
-void Cpu::opcode_E5(){};
+void Cpu::opcode_E5() { Cpu::instr_push_nn(hl); };
 void Cpu::opcode_E6(){};
 void Cpu::opcode_E7(){};
 void Cpu::opcode_E8(){};
@@ -253,11 +253,11 @@ void Cpu::opcode_ED(){};
 void Cpu::opcode_EE(){};
 void Cpu::opcode_EF(){};
 void Cpu::opcode_F0() { Cpu::instr_ld_a_n(a); };
-void Cpu::opcode_F1(){};
+void Cpu::opcode_F1() { Cpu::instr_pop_nn(af); };
 void Cpu::opcode_F2() { Cpu::instr_ld_a_c(a, c); };
 void Cpu::opcode_F3() { Cpu::instr_di(); };
 void Cpu::opcode_F4(){};
-void Cpu::opcode_F5(){};
+void Cpu::opcode_F5() { Cpu::instr_push_nn(af); };
 void Cpu::opcode_F6(){};
 void Cpu::opcode_F7(){};
 void Cpu::opcode_F8(){};

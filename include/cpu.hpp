@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 14:39:07 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 15:37:34 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ public:
     virtual void    write(uint16_t addr, uint8_t data);
     virtual uint8_t read(uint16_t addr);
     void            execute(uint8_t opcode, Reg::Word &pc);
+    void            push(Reg::BytePair &data);
+    void            pop(Reg::BytePair &data);
 
     enum class Condition {
         NZ,
@@ -39,6 +41,7 @@ public:
 
     Reg::Byte a, b, c, d, e, h, l;
 
+    Reg::BytePair af = Reg::BytePair(a, f);
     Reg::BytePair bc = Reg::BytePair(b, c);
     Reg::BytePair de = Reg::BytePair(d, e);
     Reg::BytePair hl = Reg::BytePair(h, l);
@@ -89,6 +92,8 @@ public:
     void instr_ld(Reg::Word &dst, const Reg::BytePair &src);
     void instr_ld_hl_sp_n();
     void instr_ld_nn_sp();
+    void instr_push_nn(Reg::BytePair &src);
+    void instr_pop_nn(Reg::BytePair &src);
 
     /* 8bit arithmetic/logical instructions */
     void instr_inc(uint8_t);
