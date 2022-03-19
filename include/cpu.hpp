@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 17:18:16 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 17:59:57 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,12 @@ public:
     void instr_adc(const Reg::Byte &src);
     void instr_adc(const Reg::BytePair &src);
     void instr_adc_n();
+    void instr_sub(const Reg::Byte &src);
+    void instr_sub(const Reg::BytePair &src);
+    void instr_sub_n();
+    void instr_sbc(const Reg::Byte &src);
+    void instr_sbc(const Reg::BytePair &src);
+    void instr_sbc_n();
 
 
     void instr_inc(uint8_t);
@@ -112,8 +118,6 @@ public:
     void instr_scf();
     void instr_cpl();
     void instr_ccf();
-    void instr_adc();
-    void instr_sub();
     void instr_sbc();
     void instr_and(uint8_t);
     void instr_and(uint16_t);

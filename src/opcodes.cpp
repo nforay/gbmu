@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 17:19:42 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 17:58:27 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,22 +156,22 @@ void Cpu::opcode_8C() { Cpu::instr_adc(h); };
 void Cpu::opcode_8D() { Cpu::instr_adc(l); };
 void Cpu::opcode_8E() { Cpu::instr_adc(hl); };
 void Cpu::opcode_8F() { Cpu::instr_adc(a); };
-void Cpu::opcode_90(){};
-void Cpu::opcode_91(){};
-void Cpu::opcode_92(){};
-void Cpu::opcode_93(){};
-void Cpu::opcode_94(){};
-void Cpu::opcode_95(){};
-void Cpu::opcode_96(){};
-void Cpu::opcode_97(){};
-void Cpu::opcode_98(){};
-void Cpu::opcode_99(){};
-void Cpu::opcode_9A(){};
-void Cpu::opcode_9B(){};
-void Cpu::opcode_9C(){};
-void Cpu::opcode_9D(){};
-void Cpu::opcode_9E(){};
-void Cpu::opcode_9F(){};
+void Cpu::opcode_90() { Cpu::instr_sub(b); };
+void Cpu::opcode_92() { Cpu::instr_sub(c); };
+void Cpu::opcode_91() { Cpu::instr_sub(d); };
+void Cpu::opcode_93() { Cpu::instr_sub(e); };
+void Cpu::opcode_94() { Cpu::instr_sub(h); };
+void Cpu::opcode_95() { Cpu::instr_sub(l); };
+void Cpu::opcode_96() { Cpu::instr_sub(hl); };
+void Cpu::opcode_97() { Cpu::instr_sub(a); };
+void Cpu::opcode_98() { Cpu::instr_sbc(b); };
+void Cpu::opcode_99() { Cpu::instr_sbc(c); };
+void Cpu::opcode_9A() { Cpu::instr_sbc(d); };
+void Cpu::opcode_9B() { Cpu::instr_sbc(e); };
+void Cpu::opcode_9C() { Cpu::instr_sbc(h); };
+void Cpu::opcode_9D() { Cpu::instr_sbc(l); };
+void Cpu::opcode_9E() { Cpu::instr_sbc(hl); };
+void Cpu::opcode_9F() { Cpu::instr_sbc(a); };
 void Cpu::opcode_A0(){};
 void Cpu::opcode_A1(){};
 void Cpu::opcode_A2(){};
@@ -226,7 +226,7 @@ void Cpu::opcode_D2(){};
 void Cpu::opcode_D3(){};
 void Cpu::opcode_D4(){};
 void Cpu::opcode_D5() { Cpu::instr_push_nn(de); };
-void Cpu::opcode_D6(){};
+void Cpu::opcode_D6() { Cpu::instr_sub_n(); };
 void Cpu::opcode_D7(){};
 void Cpu::opcode_D8(){};
 void Cpu::opcode_D9(){};
@@ -234,7 +234,7 @@ void Cpu::opcode_DA(){};
 void Cpu::opcode_DB(){};
 void Cpu::opcode_DC(){};
 void Cpu::opcode_DD(){};
-void Cpu::opcode_DE(){};
+void Cpu::opcode_DE() { Cpu::instr_sbc_n(); };
 void Cpu::opcode_DF(){};
 void Cpu::opcode_E0() { Cpu::instr_ld_n_a(a); };
 void Cpu::opcode_E1() { Cpu::instr_pop_nn(hl); };

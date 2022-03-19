@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 17:20:41 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/19 17:55:18 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,36 +292,116 @@ void Cpu::instr_add_n() {
  */
 void Cpu::instr_adc(const Reg::Byte &src) {
     uint16_t value = a.get() + src.get() + f.get_carry();
-    a.set(value & 0x00FF);
     f.set_zero(a.get() == 0);
     f.set_sub(0);
-    f.set_half_carry(value > 0xF); // check behaviour
-    f.set_carry(value & 0x100);    // check behaviour
+    f.set_half_carry((a.get() & 0xF + src.get() & 0xF + f.get_carry()) > 0xF); // check behaviour
+    f.set_carry(value & 0x100);                                                // check behaviour
+    a.set(value & 0x00FF);
 };
 
 /**
  * @brief      Add value at Register Pair (HL) + Carry flag to A.
  */
 void Cpu::instr_adc(const Reg::BytePair &src) {
-    uint16_t value = a.get() + read(src.get()) + f.get_carry();
-    a.set(value & 0x00FF);
+    uint8_t  tmp   = read(src.get());
+    uint16_t value = a.get() + tmp + f.get_carry();
     f.set_zero(a.get() == 0);
     f.set_sub(0);
-    f.set_half_carry(value > 0xF); // check behaviour
-    f.set_carry(value & 0x100);    // check behaviour
+    f.set_half_carry((a.get() & 0xF + tmp & 0xF + f.get_carry()) > 0xF); // check behaviour
+    f.set_carry(value & 0x100);                                          // check behaviour
+    a.set(value & 0x00FF);
 };
 
 /**
  * @brief      Add value at 16-bit nn (immediate address) + Carry flag to A.
  */
 void Cpu::instr_adc_n() {
-    uint16_t value = a.get() + read(pc.get()) + f.get_carry();
+    uint8_t tmp = read(pc.get());
     pc.inc();
-    a.set(value & 0x00FF);
+    uint16_t value = a.get() + tmp + f.get_carry();
     f.set_zero(a.get() == 0);
     f.set_sub(0);
-    f.set_half_carry(value > 0xF); // check behaviour
-    f.set_carry(value & 0x100);    // check behaviour
+    f.set_half_carry((a.get() & 0xF + tmp & 0xF + f.get_carry()) > 0xF); // check behaviour
+    f.set_carry(value & 0x100);                                          // check behaviour
+    a.set(value & 0x00FF);
+};
+
+/**
+ * @brief      Substract n from A.
+ */
+void Cpu::instr_sub(const Reg::Byte &src) {
+    uint8_t value = a.get() - src.get();
+    f.set_zero(value == 0);
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - src.get() & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < src.get());                        // check behaviour Set if no borrow.
+    a.set(value);
+};
+
+/**
+ * @brief      Substract value at Register Pair (HL) from A.
+ */
+void Cpu::instr_sub(const Reg::BytePair &src) {
+    uint8_t tmp   = read(src.get());
+    uint8_t value = a.get() - tmp;
+    f.set_zero(value == 0);
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < tmp);                        // check behaviour Set if no borrow.
+    a.set(value);
+};
+
+/**
+ * @brief      Substract value at 16-bit nn (immediate address) from A.
+ */
+void Cpu::instr_sub_n() {
+    uint8_t tmp = read(pc.get());
+    pc.inc();
+    uint8_t value = a.get() - tmp;
+    f.set_zero(value == 0);
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < tmp);                        // check behaviour Set if no borrow.
+    a.set(value);
+};
+
+/**
+ * @brief      Substract n + Carry flag from A.
+ */
+void Cpu::instr_sbc(const Reg::Byte &src) {
+    uint8_t value = a.get() - src.get() - f.get_carry();
+    f.set_zero(value == 0);
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - src.get() & 0xF - f.get_carry()) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < src.get()); // check behaviour Set if no borrow.
+    a.set(value);
+};
+
+/**
+ * @brief      Substract value at Register Pair (HL) + Carry flag from A.
+ */
+void Cpu::instr_sbc(const Reg::BytePair &src) {
+    uint8_t tmp   = read(src.get());
+    uint8_t value = a.get() - tmp - f.get_carry();
+    f.set_zero(value == 0);
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - tmp & 0xF - f.get_carry()) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < tmp); // check behaviour Set if no borrow.
+    a.set(value);
+};
+
+/**
+ * @brief      Substract value at 16-bit nn (immediate address) + Carry flag from A.
+ */
+void Cpu::instr_sbc_n() {
+    uint8_t tmp = read(pc.get());
+    pc.inc();
+    uint8_t value = a.get() - tmp - f.get_carry();
+    f.set_zero(value == 0);
+    f.set_sub(1);
+    f.set_half_carry((a.get() & 0xF - tmp & 0xF - f.get_carry()) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_carry(a.get() < tmp); // check behaviour Set if no borrow.
+    a.set(value);
 };
 
 void Cpu::instr_cb(){};
@@ -344,7 +424,6 @@ void Cpu::instr_daa(){};
 void Cpu::instr_scf(){};
 void Cpu::instr_cpl(){};
 void Cpu::instr_ccf(){};
-void Cpu::instr_sub(){};
 void Cpu::instr_sbc(){};
 void Cpu::instr_and(uint8_t){};
 void Cpu::instr_and(uint16_t){};
