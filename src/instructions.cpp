@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 22:54:14 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/20 01:06:20 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,6 +245,12 @@ void Cpu::instr_push_nn(const Reg::BytePair &src) { Cpu::push(src); };
  * Increment Stack Pointer (SP) twice.
  */
 void Cpu::instr_pop_nn(Reg::BytePair &src) { Cpu::pop(src); };
+
+/**
+ * @brief      Pop two bytes off stack into Word register.
+ * Increment Stack Pointer (SP) twice.
+ */
+void Cpu::instr_pop_nn(Reg::Word &src) { Cpu::pop(src); };
 
 /**
  * 8bit arithmetic/logical instructions ****************************************
@@ -1026,15 +1032,202 @@ void Cpu::instr_res(uint8_t b, Reg::Byte &reg) { reg.set(reg.get() & ~(1 << b));
  */
 void Cpu::instr_res(uint8_t b, const uint16_t &addr) { write(addr, read(addr) & ~(1 << b)); };
 
-void Cpu::instr_cb(){};
-void Cpu::instr_jr(){};
-void Cpu::instr_jr(Cpu::Condition cond){};
-void Cpu::instr_jp(){};
-void Cpu::instr_jp(Cpu::Condition cond){};
-void Cpu::instr_jp(uint16_t){};
-void Cpu::instr_ret(){};
-void Cpu::instr_ret(Cpu::Condition cond){};
-void Cpu::instr_reti(){};
-void Cpu::instr_call(){};
-void Cpu::instr_call(Cpu::Condition cond){};
-void Cpu::instr_rst(){};
+/**
+ * Jumps/calls instructions ****************************************************
+ */
+
+/**
+ * @brief      Jump to address nn.
+ *  nn = two byte immediate value. (LS byte first.)
+ */
+void Cpu::instr_jp() {
+    uint8_t low = read(pc.get());
+    pc.inc();
+    uint8_t high = read(pc.get());
+    pc.set((high << 8) | low);
+};
+
+/**
+ * @brief      Jump to address n if following condition is true:
+ *  cc = NZ, Jump if Z flag is reset.
+ *  cc = Z,  Jump if Z flag is set.
+ *  cc = NC, Jump if C flag is reset.
+ *  cc = C,  Jump if C flag is set.
+ */
+void Cpu::instr_jp(Cpu::Condition cc) {
+    uint8_t low = read(pc.get());
+    pc.inc();
+    uint8_t high = read(pc.get());
+    pc.inc();
+    switch (cc) {
+    case Cpu::Condition::NZ:
+        if (!f.get_zero()) {
+            pc.set((high << 8) | low);
+        }
+        break;
+    case Cpu::Condition::Z:
+        if (f.get_zero()) {
+            pc.set((high << 8) | low);
+        }
+        break;
+    case Cpu::Condition::NC:
+        if (!f.get_carry()) {
+            pc.set((high << 8) | low);
+        }
+        break;
+    case Cpu::Condition::C:
+        if (f.get_carry()) {
+            pc.set((high << 8) | low);
+        }
+        break;
+    }
+};
+
+/**
+ * @brief      Jump to address contained in HL.
+ */
+void Cpu::instr_jp(const Reg::BytePair &addr) { pc.set(addr.get()); };
+
+/**
+ * @brief      Add n to current address and jump to it.
+ */
+void Cpu::instr_jr() {
+    uint8_t offset = read(pc.get());
+    pc.inc();
+    pc.set(pc.get() + offset);
+};
+
+/**
+ * @brief      If following condition is true then add n to current
+ *  address and jump to it:
+ *  cc = NZ, Jump if Z flag is reset.
+ *  cc = Z,  Jump if Z flag is set.
+ *  cc = NC, Jump if C flag is reset.
+ *  cc = C,  Jump if C flag is set.
+ */
+void Cpu::instr_jr(Cpu::Condition cc) {
+    uint8_t offset = read(pc.get());
+    pc.inc();
+    switch (cc) {
+    case Cpu::Condition::NZ:
+        if (!f.get_zero()) {
+            pc.set(pc.get() + offset);
+        }
+        break;
+    case Cpu::Condition::Z:
+        if (f.get_zero()) {
+            pc.set(pc.get() + offset);
+        }
+        break;
+    case Cpu::Condition::NC:
+        if (!f.get_carry()) {
+            pc.set(pc.get() + offset);
+        }
+        break;
+    case Cpu::Condition::C:
+        if (f.get_carry()) {
+            pc.set(pc.get() + offset);
+        }
+        break;
+    }
+};
+
+/**
+ * @brief      Push address of next instruction onto stack and then jump
+ *  to address nn.
+ */
+void Cpu::instr_call() {
+    u_int16_t addr = read(pc.get());
+    pc.inc();
+    addr |= read(pc.get()) << 8;
+    pc.inc();
+    push(pc.get());
+    pc.set(addr);
+};
+
+/**
+ * @brief      Add n to current address and jump to it.
+ */
+void Cpu::instr_call(Cpu::Condition cc) {
+    u_int16_t addr = read(pc.get());
+    pc.inc();
+    addr |= read(pc.get()) << 8;
+    pc.inc();
+    switch (cc) {
+    case Cpu::Condition::NZ:
+        if (!f.get_zero()) {
+            pc.set(addr);
+        }
+        break;
+    case Cpu::Condition::Z:
+        if (f.get_zero()) {
+            pc.set(addr);
+        }
+        break;
+    case Cpu::Condition::NC:
+        if (!f.get_carry()) {
+            pc.set(addr);
+        }
+        break;
+    case Cpu::Condition::C:
+        if (f.get_carry()) {
+            pc.set(addr);
+        }
+        break;
+    }
+};
+
+/**
+ * @brief      Push present address onto stack. Jump to address $0000 + n.
+ *  Use with:   n = $00,$08,$10,$18,$20,$28,$30,$38
+ */
+void Cpu::instr_rst(const uint8_t offset) {
+    push(pc.get());
+    pc.set(offset);
+};
+
+/**
+ * @brief      Pop two bytes from stack & jump to that address.
+ */
+void Cpu::instr_ret() { pop(pc); };
+
+/**
+ * @brief      Return if following condition is true:
+ *  cc = NZ, Return if Z flag is reset.
+ *  cc = Z,  Return if Z flag is set.
+ *  cc = NC, Return if C flag is reset.
+ *  cc = C,  Return if C flag is set.
+ */
+void Cpu::instr_ret(Cpu::Condition cc) {
+    switch (cc) {
+    case Cpu::Condition::NZ:
+        if (!f.get_zero()) {
+            instr_ret();
+        }
+        break;
+    case Cpu::Condition::Z:
+        if (f.get_zero()) {
+            instr_ret();
+        }
+        break;
+    case Cpu::Condition::NC:
+        if (!f.get_carry()) {
+            instr_ret();
+        }
+        break;
+    case Cpu::Condition::C:
+        if (f.get_carry()) {
+            instr_ret();
+        }
+        break;
+    }
+};
+
+/**
+ * @brief      Pop two bytes from stack & jump to that address then
+ *  enable interrupts.
+ */
+void Cpu::instr_reti() {
+    instr_ret();
+    instr_ei();
+};

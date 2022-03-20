@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 22:55:53 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/20 01:07:02 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ public:
     virtual uint8_t read(uint16_t addr);
     void            execute(uint8_t opcode, Reg::Word &pc);
     void            push(const Reg::BytePair &data);
-    void            pop(Reg::BytePair &data);
+    void            push(const uint16_t &val);
+    void            pop(Reg::Word &reg);
+    void            pop(Reg::BytePair &reg);
 
     enum class Condition {
         NZ,
@@ -53,22 +55,21 @@ public:
     void instr_nop();
     void instr_halt();
     void instr_stop();
-    void instr_cb(); // CB prefix -> opcode 16-bit
     void instr_di();
     void instr_ei();
 
     /* Jumps/calls instructions */
-    void instr_jr();
-    void instr_jr(Condition);
     void instr_jp();
-    void instr_jp(Condition);
-    void instr_jp(uint16_t);
-    void instr_ret();
-    void instr_ret(Condition);
-    void instr_reti();
+    void instr_jp(Condition cc);
+    void instr_jp(const Reg::BytePair &addr);
+    void instr_jr();
+    void instr_jr(Condition cc);
     void instr_call();
-    void instr_call(Condition);
-    void instr_rst();
+    void instr_call(Condition cc);
+    void instr_rst(const uint8_t offset);
+    void instr_ret();
+    void instr_ret(Condition cc);
+    void instr_reti();
 
     /* 8bit load/store/move instructions */
     void instr_ld(Reg::Byte &dst);
@@ -94,6 +95,7 @@ public:
     void instr_ld_nn_sp();
     void instr_push_nn(const Reg::BytePair &src);
     void instr_pop_nn(Reg::BytePair &src);
+    void instr_pop_nn(Reg::Word &src);
 
     /* 8bit arithmetic/logical instructions */
     void instr_add(const Reg::Byte &src);

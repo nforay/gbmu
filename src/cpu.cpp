@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 15:43:41 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/20 01:07:08 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,24 @@ void Cpu::push(const Reg::BytePair &data) {
     sp.dec();
 }
 
+void Cpu::push(const uint16_t &val) {
+    write(sp.get(), val >> 8);
+    sp.dec();
+    write(sp.get(), val & 0xFF);
+    sp.dec();
+}
+
 void Cpu::pop(Reg::BytePair &data) {
     data.low().set(read(sp.get()));
     sp.inc();
     data.high().set(read(sp.get()));
     sp.inc();
+}
+
+void Cpu::pop(Reg::Word &reg) {
+    uint16_t val = read(sp.get());
+    sp.inc();
+    val |= read(sp.get()) << 8;
+    sp.inc();
+    reg.set(val);
 }

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 22:55:28 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/20 01:04:02 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void Cpu::opcode_14() { Cpu::instr_inc(d); };
 void Cpu::opcode_15() { Cpu::instr_dec(d); };
 void Cpu::opcode_16() { Cpu::instr_ld(d); };
 void Cpu::opcode_17() { Cpu::instr_rla(); };
-void Cpu::opcode_18(){};
+void Cpu::opcode_18() { Cpu::instr_jr(); };
 void Cpu::opcode_19() { Cpu::instr_add_hl(de); };
 void Cpu::opcode_1A() { Cpu::instr_ld(a, de); };
 void Cpu::opcode_1B() { Cpu::instr_dec_nn(de); };
@@ -44,7 +44,7 @@ void Cpu::opcode_1C() { Cpu::instr_inc(e); };
 void Cpu::opcode_1D() { Cpu::instr_dec(e); };
 void Cpu::opcode_1E() { Cpu::instr_ld(e); };
 void Cpu::opcode_1F() { Cpu::instr_rra(); };
-void Cpu::opcode_20(){};
+void Cpu::opcode_20() { Cpu::instr_jr(Cpu::Condition::NZ); };
 void Cpu::opcode_21() { Cpu::instr_ld(hl); };
 void Cpu::opcode_22() { Cpu::instr_ld_hli_a(a); };
 void Cpu::opcode_23() { Cpu::instr_inc_nn(hl); };
@@ -52,7 +52,7 @@ void Cpu::opcode_24() { Cpu::instr_inc(h); };
 void Cpu::opcode_25() { Cpu::instr_dec(h); };
 void Cpu::opcode_26() { Cpu::instr_ld(h); };
 void Cpu::opcode_27() { Cpu::instr_daa(); };
-void Cpu::opcode_28(){};
+void Cpu::opcode_28() { Cpu::instr_jr(Cpu::Condition::Z); };
 void Cpu::opcode_29() { Cpu::instr_add_hl(hl); };
 void Cpu::opcode_2A() { Cpu::instr_ld_a_hli(a); };
 void Cpu::opcode_2B() { Cpu::instr_dec_nn(hl); };
@@ -60,7 +60,7 @@ void Cpu::opcode_2C() { Cpu::instr_inc(l); };
 void Cpu::opcode_2D() { Cpu::instr_dec(l); };
 void Cpu::opcode_2E() { Cpu::instr_ld(l); };
 void Cpu::opcode_2F() { Cpu::instr_cpl(); };
-void Cpu::opcode_30(){};
+void Cpu::opcode_30() { Cpu::instr_jr(Cpu::Condition::NC); };
 void Cpu::opcode_31() { Cpu::instr_ld(sp); };
 void Cpu::opcode_32() { Cpu::instr_ld_hld_a(a); };
 void Cpu::opcode_33() { Cpu::instr_inc_nn(sp); };
@@ -68,7 +68,7 @@ void Cpu::opcode_34() { Cpu::instr_inc(hl.get()); };
 void Cpu::opcode_35() { Cpu::instr_dec(hl.get()); };
 void Cpu::opcode_36() { Cpu::instr_ld(Reg::Word(h, l)); };
 void Cpu::opcode_37() { Cpu::instr_scf(); };
-void Cpu::opcode_38(){};
+void Cpu::opcode_38() { Cpu::instr_jr(Cpu::Condition::C); };
 void Cpu::opcode_39() { Cpu::instr_add_hl(sp); };
 void Cpu::opcode_3A() { Cpu::instr_ld_a_hld(a); };
 void Cpu::opcode_3B() { Cpu::instr_dec_nn(sp); };
@@ -204,70 +204,70 @@ void Cpu::opcode_BC() { Cpu::instr_cp(h); };
 void Cpu::opcode_BD() { Cpu::instr_cp(l); };
 void Cpu::opcode_BE() { Cpu::instr_cp(hl.get()); };
 void Cpu::opcode_BF() { Cpu::instr_cp(a); };
-void Cpu::opcode_C0(){};
+void Cpu::opcode_C0() { Cpu::instr_ret(Cpu::Condition::NZ); };
 void Cpu::opcode_C1() { Cpu::instr_pop_nn(bc); };
-void Cpu::opcode_C2(){};
-void Cpu::opcode_C3(){};
-void Cpu::opcode_C4(){};
+void Cpu::opcode_C2() { Cpu::instr_jp(Cpu::Condition::NZ); };
+void Cpu::opcode_C3() { Cpu::instr_jp(); };
+void Cpu::opcode_C4() { Cpu::instr_call(Cpu::Condition::NZ); };
 void Cpu::opcode_C5() { Cpu::instr_push_nn(bc); };
 void Cpu::opcode_C6() { Cpu::instr_add_n(); };
-void Cpu::opcode_C7(){};
-void Cpu::opcode_C8(){};
-void Cpu::opcode_C9(){};
-void Cpu::opcode_CA(){};
+void Cpu::opcode_C7() { Cpu::instr_rst(0x00); };
+void Cpu::opcode_C8() { Cpu::instr_ret(Cpu::Condition::Z); };
+void Cpu::opcode_C9() { Cpu::instr_ret(); };
+void Cpu::opcode_CA() { Cpu::instr_jp(Cpu::Condition::Z); };
 void Cpu::opcode_CB(){};
-void Cpu::opcode_CC(){};
-void Cpu::opcode_CD(){};
+void Cpu::opcode_CC() { Cpu::instr_call(Cpu::Condition::Z); };
+void Cpu::opcode_CD() { Cpu::instr_call(); };
 void Cpu::opcode_CE() { Cpu::instr_adc_n(); };
-void Cpu::opcode_CF(){};
-void Cpu::opcode_D0(){};
+void Cpu::opcode_CF() { Cpu::instr_rst(0x08); };
+void Cpu::opcode_D0() { Cpu::instr_ret(Cpu::Condition::NC); };
 void Cpu::opcode_D1() { Cpu::instr_pop_nn(de); };
-void Cpu::opcode_D2(){};
-void Cpu::opcode_D3(){};
-void Cpu::opcode_D4(){};
+void Cpu::opcode_D2() { Cpu::instr_jp(Cpu::Condition::NC); };
+void Cpu::opcode_D3(){}; // illegal opcode
+void Cpu::opcode_D4() { Cpu::instr_call(Cpu::Condition::NC); };
 void Cpu::opcode_D5() { Cpu::instr_push_nn(de); };
 void Cpu::opcode_D6() { Cpu::instr_sub_n(); };
-void Cpu::opcode_D7(){};
-void Cpu::opcode_D8(){};
-void Cpu::opcode_D9(){};
-void Cpu::opcode_DA(){};
-void Cpu::opcode_DB(){};
-void Cpu::opcode_DC(){};
-void Cpu::opcode_DD(){};
+void Cpu::opcode_D7() { Cpu::instr_rst(0x10); };
+void Cpu::opcode_D8() { Cpu::instr_ret(Cpu::Condition::C); };
+void Cpu::opcode_D9() { Cpu::instr_reti(); };
+void Cpu::opcode_DA() { Cpu::instr_jp(Cpu::Condition::C); };
+void Cpu::opcode_DB(){}; // illegal opcode
+void Cpu::opcode_DC() { Cpu::instr_call(Cpu::Condition::C); };
+void Cpu::opcode_DD(){}; // illegal opcode
 void Cpu::opcode_DE() { Cpu::instr_sbc_n(); };
-void Cpu::opcode_DF(){};
+void Cpu::opcode_DF() { Cpu::instr_rst(0x18); };
 void Cpu::opcode_E0() { Cpu::instr_ld_n_a(a); };
 void Cpu::opcode_E1() { Cpu::instr_pop_nn(hl); };
 void Cpu::opcode_E2() { Cpu::instr_ld_c_a(c, a); };
-void Cpu::opcode_E3(){};
-void Cpu::opcode_E4(){};
+void Cpu::opcode_E3(){}; // illegal opcode
+void Cpu::opcode_E4(){}; // illegal opcode
 void Cpu::opcode_E5() { Cpu::instr_push_nn(hl); };
 void Cpu::opcode_E6() { Cpu::instr_and_n(); };
-void Cpu::opcode_E7(){};
+void Cpu::opcode_E7() { Cpu::instr_rst(0x20); };
 void Cpu::opcode_E8() { Cpu::instr_add_sp_n(); };
-void Cpu::opcode_E9(){};
+void Cpu::opcode_E9() { Cpu::instr_jp(hl); };
 void Cpu::opcode_EA() { Cpu::instr_ld_nn_to(a); };
-void Cpu::opcode_EB(){};
-void Cpu::opcode_EC(){};
-void Cpu::opcode_ED(){};
+void Cpu::opcode_EB(){}; // illegal opcode
+void Cpu::opcode_EC(){}; // illegal opcode
+void Cpu::opcode_ED(){}; // illegal opcode
 void Cpu::opcode_EE() { Cpu::instr_xor_n(); };
-void Cpu::opcode_EF(){};
+void Cpu::opcode_EF() { Cpu::instr_rst(0x28); };
 void Cpu::opcode_F0() { Cpu::instr_ld_a_n(a); };
 void Cpu::opcode_F1() { Cpu::instr_pop_nn(af); };
 void Cpu::opcode_F2() { Cpu::instr_ld_a_c(a, c); };
 void Cpu::opcode_F3() { Cpu::instr_di(); };
-void Cpu::opcode_F4(){};
+void Cpu::opcode_F4(){}; // illegal opcode
 void Cpu::opcode_F5() { Cpu::instr_push_nn(af); };
 void Cpu::opcode_F6() { Cpu::instr_or_n(); };
-void Cpu::opcode_F7(){};
-void Cpu::opcode_F8(){};
+void Cpu::opcode_F7() { Cpu::instr_rst(0x30); };
+void Cpu::opcode_F8() { Cpu::instr_ld_hl_sp_n(); };
 void Cpu::opcode_F9() { Cpu::instr_ld(sp, hl); };
 void Cpu::opcode_FA() { Cpu::instr_ld_nn_from(a); };
 void Cpu::opcode_FB() { Cpu::instr_di(); };
-void Cpu::opcode_FC(){};
-void Cpu::opcode_FD(){};
+void Cpu::opcode_FC(){}; // illegal opcode
+void Cpu::opcode_FD(){}; // illegal opcode
 void Cpu::opcode_FE() { Cpu::instr_cp_n(); };
-void Cpu::opcode_FF(){};
+void Cpu::opcode_FF() { Cpu::instr_rst(0x38); };
 
 void Cpu::opcode_CB_00() { Cpu::instr_rlc(b); };
 void Cpu::opcode_CB_01() { Cpu::instr_rlc(c); };

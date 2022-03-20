@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:55:20 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 15:46:43 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/20 00:13:46 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ namespace Reg {
         void     reset();
         void     inc();
         void     dec();
-        Byte     low();
-        Byte     high();
+        uint8_t  low();
+        uint8_t  high();
 
     private:
         uint16_t _value = 0;

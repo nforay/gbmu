@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 17:19:22 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 15:46:59 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/20 00:14:06 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,6 @@ void Reg::Word::inc() { _value++; }
 
 void Reg::Word::dec() { _value--; }
 
-Reg::Byte Reg::Word::low() { return Reg::Byte(_value & 0xFF); } // 00000000 11111111
+uint8_t Reg::Word::low() { return _value & 0xFF; } // 00000000 11111111
 
-Reg::Byte Reg::Word::high() { return Reg::Byte(_value >> 8); }
+uint8_t Reg::Word::high() { return _value >> 8; }
