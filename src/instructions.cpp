@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/20 01:06:20 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 02:27:53 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1183,7 +1183,7 @@ void Cpu::instr_call(Cpu::Condition cc) {
  */
 void Cpu::instr_rst(const uint8_t offset) {
     push(pc.get());
-    pc.set(offset);
+    pc.set(0x0000 + offset);
 };
 
 /**

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 00:12:21 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/16 23:37:06 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 02:38:35 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,17 @@
 
 int main(int argc, char **argv) {
     SPDLOG_INFO("Logger started");
+    std::string romfile;
     try {
         TCLAP::CmdLine cmd("GBMU", ' ', PROJECT_VER);
 #ifndef NDEBUG
         TCLAP::SwitchArg silentSwitch("s", "silent", "Disable logging", cmd, false);
         TCLAP::SwitchArg traceSwitch("t", "trace", "Set Logger level to trace", cmd, false);
 #endif
+        TCLAP::ValueArg<std::string> filepathArg("f", "file", "file to load", true, "homer", "string");
+        cmd.add(filepathArg);
         cmd.parse(argc, argv);
+        romfile = filepathArg.getValue();
 #ifndef NDEBUG
         if (traceSwitch.getValue())
             spdlog::set_level(spdlog::level::trace);
@@ -36,8 +40,8 @@ int main(int argc, char **argv) {
     }
     {
         Gbmu gbmu;
-        gbmu.init();
         gbmu.reset();
+        gbmu.insert_cartridge(romfile); // testrom path
         gbmu.run();
     }
     SPDLOG_INFO("exit");

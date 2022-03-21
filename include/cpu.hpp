@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/20 01:07:02 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 01:29:49 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@ public:
 
     virtual void    reset();
     virtual void    clock();
-    virtual void    write(uint16_t addr, const uint8_t data);
-    virtual uint8_t read(uint16_t addr);
+    virtual void    write(const uint16_t &addr, const uint8_t data);
+    virtual uint8_t read(const uint16_t &addr) const;
     void            execute(uint8_t opcode, Reg::Word &pc);
     void            push(const Reg::BytePair &data);
     void            push(const uint16_t &val);
-    void            pop(Reg::Word &reg);
     void            pop(Reg::BytePair &reg);
+    void            pop(Reg::Word &reg);
 
     enum class Condition {
         NZ,

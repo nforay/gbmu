@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/20 01:07:08 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 01:43:07 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,18 @@ Cpu::Cpu(Bus *bus) : Component(bus) { SPDLOG_TRACE("Cpu Constructor"); }
 
 Cpu::~Cpu() { SPDLOG_TRACE("Cpu Destructor"); }
 
-void Cpu::write(uint16_t addr, const uint8_t data) { Component::write(addr, data); }
+void Cpu::write(const uint16_t &addr, const uint8_t data) { Component::write(addr, data); }
 
-uint8_t Cpu::read(uint16_t addr) { return Component::read(addr); }
+uint8_t Cpu::read(const uint16_t &addr) const { return Component::read(addr); }
 
 void Cpu::reset() {
     SPDLOG_TRACE("Cpu reset");
-    a.reset();
-    f.reset();
-    b.reset();
-    c.reset();
-    d.reset();
-    e.reset();
-    h.reset();
-    l.reset();
-    sp.reset();
-    pc.reset();
+    af.set(0x01B0);
+    bc.set(0x0013);
+    de.set(0x00D8);
+    hl.set(0x014D);
+    sp.set(0xFFFE);
+    pc.set(0x0100);
 }
 
 void Cpu::clock() { SPDLOG_TRACE("Cpu clock"); }
@@ -62,6 +58,7 @@ void Cpu::execute(uint8_t opcode, Reg::Word &pc) {
         /* clang-format on */
     } else {
         opcode = read(pc.get());
+        pc.inc();
         SPDLOG_TRACE("Cpu execute opcode 0x{:02X} : {}", opcode, opcode_CB_names[opcode]);
         /* clang-format off */
         switch (opcode) {
@@ -87,17 +84,17 @@ void Cpu::execute(uint8_t opcode, Reg::Word &pc) {
 }
 
 void Cpu::push(const Reg::BytePair &data) {
+    sp.dec();
     write(sp.get(), data.high().get());
     sp.dec();
     write(sp.get(), data.low().get());
-    sp.dec();
 }
 
 void Cpu::push(const uint16_t &val) {
-    write(sp.get(), val >> 8);
+    sp.dec();
+    write(sp.get(), (val & 0xFF00) >> 8);
     sp.dec();
     write(sp.get(), val & 0xFF);
-    sp.dec();
 }
 
 void Cpu::pop(Reg::BytePair &data) {

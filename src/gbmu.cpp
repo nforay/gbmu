@@ -6,18 +6,24 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/19 14:46:26 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 02:16:21 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gbmu.hpp"
 
-Gbmu::Gbmu() { SPDLOG_TRACE("Gbmu Constructor"); }
+#include <fstream>  //TODO: wrapper for cartridge
+#include <unistd.h> //tmp usleep()
+
+Gbmu::Gbmu() {
+    SPDLOG_TRACE("Gbmu Constructor");
+    init();
+}
 
 Gbmu::~Gbmu() { SPDLOG_TRACE("Gbmu Destructor"); }
 
 void Gbmu::init() {
-    SPDLOG_INFO("Gbmu init");
+    SPDLOG_TRACE("Gbmu init");
     _cpu = std::make_shared<Cpu>(_bus.get());
     _ppu = std::make_shared<Ppu>(_bus.get());
     _components.emplace_back(_cpu);
@@ -29,31 +35,44 @@ void Gbmu::reset() {
     for (auto component : _components) {
         component->reset();
     }
+    _bus->reset();
 }
 
 void Gbmu::run() {
     SPDLOG_INFO("Gbmu run");
-    _cpu->write(0x0000, 0x01);
-    _cpu->write(0x1337, 0x42);
-    for (auto component : _components) {
-        component->clock();
+    while (42) {
+        u_int8_t opcode = _cpu->read(_cpu->pc.get());
+        _cpu->pc.inc();
+        _cpu->execute(opcode, _cpu->pc);
+        usleep(1000 * 100);
+        SPDLOG_INFO("Registers: af: 0x{:04X}, bc: 0x{:04X}, de: 0x{:04X}, hl: 0x{:04X}, sp: "
+                    "0x{:04X}, pc: 0x{:04X}",
+                    _cpu->af.get(), _cpu->bc.get(), _cpu->de.get(), _cpu->hl.get(), _cpu->sp.get(),
+                    _cpu->pc.get());
     }
-    if (_cpu->read(0x0000) == 0x01) {
-        SPDLOG_INFO("Gbmu bus ok");
-    }
-    _cpu->execute(0x00, _cpu->pc);
-    _cpu->execute(0xCB, _cpu->pc);
-    _cpu->execute(0xD3, _cpu->pc);
-    _cpu->execute(0x10, _cpu->pc);
-    _cpu->b.set(0x13);
-    _cpu->c.set(0x37);
-    _cpu->read(_cpu->bc.get());
-    _cpu->write(0x0001, 0x37);
-    _cpu->write(0x0002, 0x13);
-    _cpu->pc.set(0x0001);
-    _cpu->execute(0xFA, _cpu->pc);
 }
 
 void Gbmu::insert_cartridge(std::string filename) {
     SPDLOG_INFO("Gbmu insert_cartridge: {}", filename);
+    // open as binary or whitespace read as '0x00'
+    std::ifstream file_stream(filename.c_str(), std::ios::binary | std::ios::ate);
+    if (!file_stream.good()) {
+        SPDLOG_ERROR("Error opening file: {}", filename);
+        return;
+    }
+    std::ifstream::pos_type position  = file_stream.tellg();
+    auto                    file_size = static_cast<size_t>(position);
+    std::vector<char>       cartridge_rom(file_size);
+
+    file_stream.seekg(0, std::ios::beg);
+    file_stream.read(&cartridge_rom[0], static_cast<std::streamsize>(position));
+    file_stream.close();
+
+    auto data = std::vector<uint8_t>(cartridge_rom.begin(), cartridge_rom.end());
+    int  size = cartridge_rom.size() > 0x7FFF ? 0x7FFF : cartridge_rom.size();
+    for (int i = 0; i < size; i++) {
+        _bus->_ram[i] = cartridge_rom[i];
+        if (i >= 0x80 && i <= 0x8F)
+            SPDLOG_TRACE("ram address: 0x{:04X}, value: 0x{:02X}", i, _bus->_ram[i]);
+    }
 }
