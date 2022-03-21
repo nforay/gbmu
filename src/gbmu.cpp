@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 02:16:21 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 03:26:14 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void Gbmu::insert_cartridge(std::string filename) {
     file_stream.close();
 
     auto data = std::vector<uint8_t>(cartridge_rom.begin(), cartridge_rom.end());
-    int  size = cartridge_rom.size() > 0x7FFF ? 0x7FFF : cartridge_rom.size();
+    int  size = cartridge_rom.size() > 0x7FFF ? 0x7FFF : cartridge_rom.size(); // HACK
     for (int i = 0; i < size; i++) {
         _bus->_ram[i] = cartridge_rom[i];
         if (i >= 0x80 && i <= 0x8F)

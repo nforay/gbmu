@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 02:27:53 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 03:25:27 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -520,7 +520,7 @@ void Cpu::instr_xor_n() {
 void Cpu::instr_cp(const Reg::Byte &src) {
     f.set_zero(a.get() == src.get());
     f.set_sub(1);
-    f.set_half_carry((a.get() & 0xF - src.get() & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_half_carry(((a.get() & 0xF) - (src.get() & 0xF)) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < src.get());
 };
 
@@ -532,7 +532,7 @@ void Cpu::instr_cp(const uint16_t &addr) {
     uint8_t tmp = read(addr);
     f.set_zero(tmp == a.get());
     f.set_sub(1);
-    f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_half_carry(((a.get() & 0xF) - (tmp & 0xF)) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < tmp);
 };
 
@@ -545,7 +545,7 @@ void Cpu::instr_cp_n() {
     pc.inc();
     f.set_zero(tmp == a.get());
     f.set_sub(1);
-    f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
+    f.set_half_carry(((a.get() & 0xF) - (tmp & 0xF)) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < tmp);
 };
 
@@ -1092,7 +1092,7 @@ void Cpu::instr_jp(const Reg::BytePair &addr) { pc.set(addr.get()); };
  * @brief      Add n to current address and jump to it.
  */
 void Cpu::instr_jr() {
-    uint8_t offset = read(pc.get());
+    int8_t offset = read(pc.get());
     pc.inc();
     pc.set(pc.get() + offset);
 };
@@ -1106,7 +1106,7 @@ void Cpu::instr_jr() {
  *  cc = C,  Jump if C flag is set.
  */
 void Cpu::instr_jr(Cpu::Condition cc) {
-    uint8_t offset = read(pc.get());
+    int8_t offset = read(pc.get());
     pc.inc();
     switch (cc) {
     case Cpu::Condition::NZ:
@@ -1130,6 +1130,7 @@ void Cpu::instr_jr(Cpu::Condition cc) {
         }
         break;
     }
+    SPDLOG_TRACE("JR CC,r8: PC = {:04x}, offset = {}", pc.get(), offset); // tmp
 };
 
 /**
