@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 03:25:27 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 03:36:09 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1089,7 +1089,7 @@ void Cpu::instr_jp(Cpu::Condition cc) {
 void Cpu::instr_jp(const Reg::BytePair &addr) { pc.set(addr.get()); };
 
 /**
- * @brief      Add n to current address and jump to it.
+ * @brief      Add n (signed) to current address and jump to it.
  */
 void Cpu::instr_jr() {
     int8_t offset = read(pc.get());
@@ -1098,7 +1098,7 @@ void Cpu::instr_jr() {
 };
 
 /**
- * @brief      If following condition is true then add n to current
+ * @brief      If following condition is true then add n (signed) to current
  *  address and jump to it:
  *  cc = NZ, Jump if Z flag is reset.
  *  cc = Z,  Jump if Z flag is set.
@@ -1130,7 +1130,6 @@ void Cpu::instr_jr(Cpu::Condition cc) {
         }
         break;
     }
-    SPDLOG_TRACE("JR CC,r8: PC = {:04x}, offset = {}", pc.get(), offset); // tmp
 };
 
 /**

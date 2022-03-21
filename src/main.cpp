@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 00:12:21 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 02:38:35 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 03:56:13 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
         TCLAP::SwitchArg silentSwitch("s", "silent", "Disable logging", cmd, false);
         TCLAP::SwitchArg traceSwitch("t", "trace", "Set Logger level to trace", cmd, false);
 #endif
-        TCLAP::ValueArg<std::string> filepathArg("f", "file", "file to load", true, "homer", "string");
+        TCLAP::ValueArg<std::string> filepathArg("f", "file", "file to load", true, "", "string");
         cmd.add(filepathArg);
         cmd.parse(argc, argv);
         romfile = filepathArg.getValue();

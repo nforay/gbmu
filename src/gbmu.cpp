@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 03:26:14 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/21 03:56:29 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,5 @@ void Gbmu::insert_cartridge(std::string filename) {
     int  size = cartridge_rom.size() > 0x7FFF ? 0x7FFF : cartridge_rom.size(); // HACK
     for (int i = 0; i < size; i++) {
         _bus->_ram[i] = cartridge_rom[i];
-        if (i >= 0x80 && i <= 0x8F)
-            SPDLOG_TRACE("ram address: 0x{:04X}, value: 0x{:02X}", i, _bus->_ram[i]);
     }
 }
