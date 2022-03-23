@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 03:56:29 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/23 17:26:02 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,20 @@ void Gbmu::reset() {
 
 void Gbmu::run() {
     SPDLOG_INFO("Gbmu run");
-    while (42) {
-        u_int8_t opcode = _cpu->read(_cpu->pc.get());
-        _cpu->pc.inc();
-        _cpu->execute(opcode, _cpu->pc);
-        usleep(1000 * 100);
-        SPDLOG_INFO("Registers: af: 0x{:04X}, bc: 0x{:04X}, de: 0x{:04X}, hl: 0x{:04X}, sp: "
-                    "0x{:04X}, pc: 0x{:04X}",
-                    _cpu->af.get(), _cpu->bc.get(), _cpu->de.get(), _cpu->hl.get(), _cpu->sp.get(),
-                    _cpu->pc.get());
+    while (_ppu.get()->is_window_open()) {
+        if (_ppu.get()->is_window_focused()) {
+            u_int8_t opcode = _cpu->read(_cpu->pc.get());
+            _cpu->pc.inc();
+            _cpu->execute(opcode, _cpu->pc);
+            usleep(1000 * 100);
+            SPDLOG_INFO("Registers: af: 0x{:04X}, bc: 0x{:04X}, de: 0x{:04X}, hl: 0x{:04X}, sp: "
+                        "0x{:04X}, pc: 0x{:04X}",
+                        _cpu->af.get(), _cpu->bc.get(), _cpu->de.get(), _cpu->hl.get(),
+                        _cpu->sp.get(), _cpu->pc.get());
+            _ppu->clock();
+        } else {
+            usleep(100);
+        }
     }
 }
 

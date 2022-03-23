@@ -24,6 +24,7 @@ set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-point
 include_directories(
     "${PROJECT_SOURCE_DIR}/include"
     "${PROJECT_SOURCE_DIR}/src"
+    "${PROJECT_SOURCE_DIR}/deps/sfml/include"
     "${PROJECT_SOURCE_DIR}/deps/spdlog/include"
     "${PROJECT_SOURCE_DIR}/deps/tclap/include"
 )
