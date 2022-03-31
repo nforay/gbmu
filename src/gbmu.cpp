@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/23 17:26:02 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/31 18:31:28 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ void Gbmu::run() {
 
 void Gbmu::insert_cartridge(std::string filename) {
     SPDLOG_INFO("Gbmu insert_cartridge: {}", filename);
-    // open as binary or whitespace read as '0x00'
     std::ifstream file_stream(filename.c_str(), std::ios::binary | std::ios::ate);
     if (!file_stream.good()) {
         SPDLOG_ERROR("Error opening file: {}", filename);
@@ -73,8 +72,9 @@ void Gbmu::insert_cartridge(std::string filename) {
     file_stream.read(&cartridge_rom[0], static_cast<std::streamsize>(position));
     file_stream.close();
 
-    auto data = std::vector<uint8_t>(cartridge_rom.begin(), cartridge_rom.end());
-    int  size = cartridge_rom.size() > 0x7FFF ? 0x7FFF : cartridge_rom.size(); // HACK
+    auto data  = std::vector<uint8_t>(cartridge_rom.begin(), cartridge_rom.end());
+    _cartridge = std::make_shared<Cartridge>(_bus.get(), data);
+    int size   = cartridge_rom.size() > 0x7FFF ? 0x7FFF : cartridge_rom.size(); // HACK
     for (int i = 0; i < size; i++) {
         _bus->_ram[i] = cartridge_rom[i];
     }

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 03:31:44 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/30 16:59:35 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void Cpu::reset() {
     de.set(0x00D8);
     hl.set(0x014D);
     sp.set(0xFFFE);
-    pc.set(0x0100);
+    pc.set(0x0000);
 }
 
 void Cpu::clock() { SPDLOG_TRACE("Cpu clock"); }

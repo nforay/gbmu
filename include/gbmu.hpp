@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/20 02:08:42 by nforay           ###   ########.fr       */
+/*   Updated: 2022/03/30 16:04:47 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <memory>
 #include <vector>
 
+#include "cartridge.hpp"
 #include "cpu.hpp"
 #include "logger.h"
 #include "ppu.hpp"
@@ -35,5 +36,6 @@ private:
     std::unique_ptr<Bus>                    _bus{std::make_unique<Bus>()};
     std::shared_ptr<Cpu>                    _cpu;
     std::shared_ptr<Ppu>                    _ppu;
+    std::shared_ptr<Cartridge>              _cartridge;
     std::vector<std::shared_ptr<Component>> _components;
 };
