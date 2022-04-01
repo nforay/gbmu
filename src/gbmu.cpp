@@ -6,14 +6,15 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/31 18:31:28 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/01 22:25:45 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gbmu.hpp"
-
 #include <fstream>  //TODO: wrapper for cartridge
 #include <unistd.h> //tmp usleep()
+
+#include "cartridge.hpp"
+#include "gbmu.hpp"
 
 Gbmu::Gbmu() {
     SPDLOG_TRACE("Gbmu Constructor");
@@ -72,10 +73,27 @@ void Gbmu::insert_cartridge(std::string filename) {
     file_stream.read(&cartridge_rom[0], static_cast<std::streamsize>(position));
     file_stream.close();
 
-    auto data  = std::vector<uint8_t>(cartridge_rom.begin(), cartridge_rom.end());
-    _cartridge = std::make_shared<Cartridge>(_bus.get(), data);
-    int size   = cartridge_rom.size() > 0x7FFF ? 0x7FFF : cartridge_rom.size(); // HACK
-    for (int i = 0; i < size; i++) {
-        _bus->_ram[i] = cartridge_rom[i];
+    auto data = std::vector<uint8_t>(cartridge_rom.begin(), cartridge_rom.end());
+
+    auto header = parseHeader(data);
+    switch (header.cartridgeType) {
+    case CartridgeType::ROM_ONLY:
+        _bus.get()->_cartridge = std::make_shared<MBC1>(data, header);
+        break;
+    case CartridgeType::MBC1:
+        _bus.get()->_cartridge = std::make_shared<MBC1>(data, header);
+        break;
+    case CartridgeType::MBC2:
+        _bus.get()->_cartridge = std::make_shared<MBC2>(data, header);
+        break;
+    case CartridgeType::MBC3:
+        _bus.get()->_cartridge = std::make_shared<MBC3>(data, header);
+        break;
+    case CartridgeType::MBC5:
+        _bus.get()->_cartridge = std::make_shared<MBC5>(data, header);
+        break;
+    default:
+        SPDLOG_ERROR("Unsupported cartridge type: {}", (int)header.cartridgeType);
+        return;
     }
 }

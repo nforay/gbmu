@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:09:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/31 15:33:16 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/01 23:54:46 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@ void Bus::write(const uint16_t &addr, const uint8_t data) {
 }
 
 uint8_t Bus::read(const uint16_t &addr) const {
-    if (addr < 0x0100) {
+    /*if (addr < 0x0100) {
         return _bootrom[addr];
-    } else if (addr >= 0x0000 && addr <= 0x7FFF) {
+    } else */
+    if (addr >= 0x0000 && addr <= 0x7FFF) {
         SPDLOG_TRACE("Bus read: 0x{:04X} = 0x{:02X}", addr, _ram[addr]);
-        return _cartridge->read(addr);
+        return _cartridge.get()->read(addr);
     } else if (addr >= 0x8000 && addr <= 0xFFFF) {
         SPDLOG_TRACE("Bus read: 0x{:04X} = 0x{:02X}", addr, _ram[addr]);
         return _ram[addr];
