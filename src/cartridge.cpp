@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 18:53:54 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/02 00:13:16 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/02 00:29:04 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,17 @@ MBC1::MBC1(const std::vector<uint8_t> &data, const CartridgeHeader &header)
 
 MBC1::~MBC1() { SPDLOG_TRACE("MBC1 Destructor"); }
 
-void MBC1::write(const uint16_t &addr, uint8_t data){};
+void MBC1::write(const uint16_t &addr, uint8_t data) {
+    // TODO: implement bank switching
+    SPDLOG_INFO("MBC1 write addr: 0x{:04X}, data: 0x{:02X}", addr, data);
+    _ram[addr] = data;
+}
 
-uint8_t MBC1::read(const uint16_t &addr) const { return 0; };
+uint8_t MBC1::read(const uint16_t &addr) const {
+    // TODO: implement bank switching
+    SPDLOG_INFO("MBC1 read addr: 0x{:04X}, data: 0x{:02X}", addr, _rom[addr]);
+    return _rom[addr];
+};
 
 MBC2::MBC2(const std::vector<uint8_t> &data, const CartridgeHeader &header)
     : Cartridge(data, header) {
@@ -43,9 +51,15 @@ MBC2::MBC2(const std::vector<uint8_t> &data, const CartridgeHeader &header)
 
 MBC2::~MBC2() { SPDLOG_TRACE("MBC2 Destructor"); }
 
-void MBC2::write(const uint16_t &addr, uint8_t data){};
+void MBC2::write(const uint16_t &addr, uint8_t data) {
+    SPDLOG_INFO("MBC2 write addr: 0x{:04X}, data: 0x{:02X}", addr, data);
+    _ram[addr] = data;
+};
 
-uint8_t MBC2::read(const uint16_t &addr) const { return 0; };
+uint8_t MBC2::read(const uint16_t &addr) const {
+    SPDLOG_INFO("MBC2 read addr: 0x{:04X}, data: 0x{:02X}", addr, _rom[addr]);
+    return _rom[addr];
+};
 
 MBC3::MBC3(const std::vector<uint8_t> &data, const CartridgeHeader &header)
     : Cartridge(data, header) {
@@ -54,9 +68,15 @@ MBC3::MBC3(const std::vector<uint8_t> &data, const CartridgeHeader &header)
 
 MBC3::~MBC3() { SPDLOG_TRACE("MBC3 Destructor"); }
 
-void MBC3::write(const uint16_t &addr, uint8_t data){};
+void MBC3::write(const uint16_t &addr, uint8_t data) {
+    SPDLOG_INFO("MBC3 write addr: 0x{:04X}, data: 0x{:02X}", addr, data);
+    _ram[addr] = data;
+};
 
-uint8_t MBC3::read(const uint16_t &addr) const { return 0; };
+uint8_t MBC3::read(const uint16_t &addr) const {
+    SPDLOG_INFO("MBC3 read addr: 0x{:04X}, data: 0x{:02X}", addr, _rom[addr]);
+    return _rom[addr];
+};
 
 MBC5::MBC5(const std::vector<uint8_t> &data, const CartridgeHeader &header)
     : Cartridge(data, header) {
@@ -65,6 +85,12 @@ MBC5::MBC5(const std::vector<uint8_t> &data, const CartridgeHeader &header)
 
 MBC5::~MBC5() { SPDLOG_TRACE("MBC5 Destructor"); }
 
-void MBC5::write(const uint16_t &addr, uint8_t data){};
+void MBC5::write(const uint16_t &addr, uint8_t data) {
+    SPDLOG_INFO("MBC5 write addr: 0x{:04X}, data: 0x{:02X}", addr, data);
+    _ram[addr] = data;
+};
 
-uint8_t MBC5::read(const uint16_t &addr) const { return 0; };
+uint8_t MBC5::read(const uint16_t &addr) const {
+    SPDLOG_INFO("MBC5 read addr: 0x{:04X}, data: 0x{:02X}", addr, _rom[addr]);
+    return _rom[addr];
+};
