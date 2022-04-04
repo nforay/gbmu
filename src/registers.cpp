@@ -6,11 +6,34 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 17:19:22 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/20 00:14:06 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 19:13:39 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "registers.hpp"
+
+Reg::BytePtr::BytePtr(uint8_t *addr) : _ptr(addr) {}
+
+Reg::BytePtr::~BytePtr() {}
+
+uint8_t Reg::BytePtr::get() const { return *_ptr; }
+
+bool Reg::BytePtr::get_bit(uint8_t bit) const { return (*_ptr >> bit) & 1; }
+
+void Reg::BytePtr::set_bit(uint8_t bit, bool value) {
+    if (value)
+        *_ptr |= (1 << bit);
+    else
+        *_ptr &= ~(1 << bit);
+}
+
+void Reg::BytePtr::set(uint8_t value) { *_ptr = value; }
+
+void Reg::BytePtr::reset() { *_ptr = 0; }
+
+void Reg::BytePtr::inc() { (*_ptr)++; }
+
+void Reg::BytePtr::dec() { (*_ptr)--; }
 
 Reg::Byte::Byte(uint8_t value) : _value(value) {}
 

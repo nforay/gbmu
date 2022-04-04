@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:55:20 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/20 00:13:46 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 18:52:19 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,23 @@
 #include <stdint.h>
 
 namespace Reg {
+    class BytePtr {
+    public:
+        BytePtr(uint8_t *addr);
+        ~BytePtr();
+
+        uint8_t get() const;
+        bool    get_bit(uint8_t bit) const;
+        void    set_bit(uint8_t bit, bool value);
+        void    set(uint8_t value);
+        void    inc();
+        void    dec();
+        void    reset();
+
+    private:
+        uint8_t *_ptr;
+    };
+
     class Byte {
     public:
         Byte() = default;

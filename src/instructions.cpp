@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 03:36:09 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 19:46:39 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1055,31 +1055,15 @@ void Cpu::instr_jp() {
  *  cc = C,  Jump if C flag is set.
  */
 void Cpu::instr_jp(Cpu::Condition cc) {
-    uint8_t low = read(pc.get());
-    pc.inc();
-    uint8_t high = read(pc.get());
-    pc.inc();
-    switch (cc) {
-    case Cpu::Condition::NZ:
-        if (!f.get_zero()) {
-            pc.set((high << 8) | low);
-        }
-        break;
-    case Cpu::Condition::Z:
-        if (f.get_zero()) {
-            pc.set((high << 8) | low);
-        }
-        break;
-    case Cpu::Condition::NC:
-        if (!f.get_carry()) {
-            pc.set((high << 8) | low);
-        }
-        break;
-    case Cpu::Condition::C:
-        if (f.get_carry()) {
-            pc.set((high << 8) | low);
-        }
-        break;
+    if (Cpu::test_condition(cc)) {
+        uint8_t low = read(pc.get());
+        pc.inc();
+        uint8_t high = read(pc.get());
+        pc.inc();
+        pc.set((high << 8) | low);
+    } else {
+        pc.inc();
+        pc.inc();
     }
 };
 
@@ -1106,29 +1090,12 @@ void Cpu::instr_jr() {
  *  cc = C,  Jump if C flag is set.
  */
 void Cpu::instr_jr(Cpu::Condition cc) {
-    int8_t offset = read(pc.get());
-    pc.inc();
-    switch (cc) {
-    case Cpu::Condition::NZ:
-        if (!f.get_zero()) {
-            pc.set(pc.get() + offset);
-        }
-        break;
-    case Cpu::Condition::Z:
-        if (f.get_zero()) {
-            pc.set(pc.get() + offset);
-        }
-        break;
-    case Cpu::Condition::NC:
-        if (!f.get_carry()) {
-            pc.set(pc.get() + offset);
-        }
-        break;
-    case Cpu::Condition::C:
-        if (f.get_carry()) {
-            pc.set(pc.get() + offset);
-        }
-        break;
+    if (Cpu::test_condition(cc)) {
+        int8_t offset = read(pc.get());
+        pc.inc();
+        pc.set(pc.get() + offset);
+    } else {
+        pc.inc();
     }
 };
 
@@ -1149,31 +1116,15 @@ void Cpu::instr_call() {
  * @brief      Add n to current address and jump to it.
  */
 void Cpu::instr_call(Cpu::Condition cc) {
-    u_int16_t addr = read(pc.get());
-    pc.inc();
-    addr |= read(pc.get()) << 8;
-    pc.inc();
-    switch (cc) {
-    case Cpu::Condition::NZ:
-        if (!f.get_zero()) {
-            pc.set(addr);
-        }
-        break;
-    case Cpu::Condition::Z:
-        if (f.get_zero()) {
-            pc.set(addr);
-        }
-        break;
-    case Cpu::Condition::NC:
-        if (!f.get_carry()) {
-            pc.set(addr);
-        }
-        break;
-    case Cpu::Condition::C:
-        if (f.get_carry()) {
-            pc.set(addr);
-        }
-        break;
+    if (Cpu::test_condition(cc)) {
+        u_int16_t addr = read(pc.get());
+        pc.inc();
+        addr |= read(pc.get()) << 8;
+        pc.inc();
+        pc.set(addr);
+    } else {
+        pc.inc();
+        pc.inc();
     }
 };
 
@@ -1199,27 +1150,8 @@ void Cpu::instr_ret() { pop(pc); };
  *  cc = C,  Return if C flag is set.
  */
 void Cpu::instr_ret(Cpu::Condition cc) {
-    switch (cc) {
-    case Cpu::Condition::NZ:
-        if (!f.get_zero()) {
-            instr_ret();
-        }
-        break;
-    case Cpu::Condition::Z:
-        if (f.get_zero()) {
-            instr_ret();
-        }
-        break;
-    case Cpu::Condition::NC:
-        if (!f.get_carry()) {
-            instr_ret();
-        }
-        break;
-    case Cpu::Condition::C:
-        if (f.get_carry()) {
-            instr_ret();
-        }
-        break;
+    if (Cpu::test_condition(cc)) {
+        instr_ret();
     }
 };
 

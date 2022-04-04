@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:05:07 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/21 01:14:57 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 18:25:19 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ public:
 
 protected:
     Component(Bus *bus);
+    uint8_t *getPointer(const uint16_t &addr) const;
 
 private:
     Bus *_bus;

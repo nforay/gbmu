@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/30 16:22:33 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 19:37:11 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,12 @@
 #include "registers.hpp"
 
 class Cpu : public Component {
+    enum class Condition {
+        NZ,
+        Z,
+        NC,
+        C,
+    };
 
 public:
     Cpu(Bus *bus);
@@ -31,13 +37,9 @@ public:
     void            push(const uint16_t &val);
     void            pop(Reg::BytePair &reg);
     void            pop(Reg::Word &reg);
+    bool            test_condition(Condition cond);
 
-    enum class Condition {
-        NZ,
-        Z,
-        NC,
-        C,
-    };
+    bool take_branch = false;
 
     Reg::Flag f;
 

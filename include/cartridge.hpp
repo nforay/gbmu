@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 18:53:24 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 04:12:59 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 17:42:57 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@
 
 class address_range {
 public:
-    address_range(uint16_t start, uint16_t end) : start(start), end(end), diff(end - start) {}
-    uint16_t start;
-    uint16_t end;
-    uint16_t diff;
+    address_range(const uint16_t &start, const uint16_t &end)
+        : start(start), end(end), diff(end - start) {}
+    const uint16_t start;
+    const uint16_t end;
+    const uint16_t diff;
 };
 
 enum class BankMode {
@@ -58,6 +59,7 @@ public:
     uint8_t  _selected_rom_bank = 1;
     uint8_t  _selected_ram_bank = 1;
     uint8_t  _ram_bank_count    = 0;
+    uint8_t  _rom_bank_count    = 0;
     uint8_t  lower              = 1;
     uint8_t  upper              = 0;
 };

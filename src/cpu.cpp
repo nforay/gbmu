@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/01 23:55:07 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 19:47:37 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,4 +110,23 @@ void Cpu::pop(Reg::Word &reg) {
     val |= read(sp.get()) << 8;
     sp.inc();
     reg.set(val);
+}
+
+bool Cpu::test_condition(Condition cond) {
+    bool will_branch = false;
+    switch (cond) {
+    case Cpu::Condition::NZ:
+        will_branch = !f.get_zero();
+        break;
+    case Cpu::Condition::Z:
+        will_branch = f.get_zero();
+        break;
+    case Cpu::Condition::NC:
+        will_branch = !f.get_carry();
+        break;
+    case Cpu::Condition::C:
+        will_branch = f.get_carry();
+        break;
+    }
+    return (take_branch = will_branch);
 }
