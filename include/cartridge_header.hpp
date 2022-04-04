@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 18:29:31 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/01 16:27:43 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 03:59:44 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ enum class RAMSize {
 
 class CartridgeHeader { // unused: newLicense, destination, oldLicense, ManufacturerCode, SGBFlag
 public:
+    uint32_t getRamSize() const;
+
     std::string   title;
     CartridgeType cartridgeType;
     ROMSize       romSize;

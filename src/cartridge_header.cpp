@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 18:29:37 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/02 00:12:56 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 04:06:31 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,25 @@ CartridgeHeader parseHeader(const std::vector<uint8_t> &data) {
     header.globalChecksum = ((data[header::GlobalChecksum] << 8) | data[header::GlobalChecksum + 1]);
     header.cgbFlag        = data[header::CGBFlag];
     return header;
+}
+
+uint32_t CartridgeHeader::getRamSize() const {
+    switch (this->ramSize) {
+    case RAMSize::KB0:
+        return 0;
+    case RAMSize::KB2:
+        return (2 * 1024);
+    case RAMSize::KB8:
+        return (8 * 1024);
+    case RAMSize::KB32:
+        return (8 * 1024);
+    case RAMSize::KB128:
+        return (32 * 1024);
+    case RAMSize::KB64:
+        return (64 * 1024);
+    default:
+        return 0;
+    }
 }
 
 bool checkHeaderChecksum(const std::vector<uint8_t> &data) {

@@ -6,11 +6,15 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 18:53:54 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/02 00:29:04 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 04:21:46 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cartridge.hpp"
+
+auto in_range = [](const uint16_t &addr, const address_range &range) -> bool {
+    return ((addr - range.start) <= range.diff);
+};
 
 Cartridge::Cartridge(const std::vector<uint8_t> &data, const CartridgeHeader &header)
     : _header(header), _rom(data) {
@@ -28,20 +32,51 @@ Cartridge::~Cartridge() { SPDLOG_TRACE("Cartridge Destructor"); }
 MBC1::MBC1(const std::vector<uint8_t> &data, const CartridgeHeader &header)
     : Cartridge(data, header) {
     SPDLOG_TRACE("MBC1 Constructor");
+    _ram.resize(_header.getRamSize());
 };
 
 MBC1::~MBC1() { SPDLOG_TRACE("MBC1 Destructor"); }
 
+// banking: TCAGBD.pdf page 54
 void MBC1::write(const uint16_t &addr, uint8_t data) {
-    // TODO: implement bank switching
     SPDLOG_INFO("MBC1 write addr: 0x{:04X}, data: 0x{:02X}", addr, data);
-    _ram[addr] = data;
+    if (addr <= MBC1_range::ramEnable.end)
+        _ram_enabled = (data == 0x0A);
+    else if (in_range(addr, MBC1_range::switchableRamBank))
+        _ram[addr - 0xA000 + _selected_ram_bank * (0xBFFF - 0xA000)] = data;
+    else if (in_range(addr, MBC1_range::romBankSelect)) {
+        lower = data;
+        if (!lower)
+            lower = 1;
+        _selected_rom_bank = ((upper << 3) | (lower & 0x1F));
+    } else if (in_range(addr, MBC1_range::ramBankSelect)) {
+        if (!_ram.empty() && _mode == BankMode::RAM && _ram_enabled)
+            _selected_ram_bank = data;
+        else {
+            upper              = data;
+            _selected_ram_bank = ((upper << 3) | (lower & 0x1F));
+        }
+    } else if (in_range(addr, MBC1_range::bankingmode))
+        _mode = (data ? BankMode::RAM : BankMode::ROM);
 }
 
+// banking: TCAGBD.pdf page 54
 uint8_t MBC1::read(const uint16_t &addr) const {
-    // TODO: implement bank switching
-    SPDLOG_INFO("MBC1 read addr: 0x{:04X}, data: 0x{:02X}", addr, _rom[addr]);
-    return _rom[addr];
+    if (in_range(addr, MBC1_range::romBank0)) {
+        SPDLOG_INFO("MBC1 read addr: 0x{:04X}, data: 0x{:02X}", addr, _rom[addr]);
+        return _rom[addr];
+    }
+    if (in_range(addr, MBC1_range::switchableRomBank)) {
+        SPDLOG_INFO("MBC1 read addr: 0x{:04X}, data: 0x{:02X}", addr,
+                    _rom[addr - 0x4000 + _selected_rom_bank * 0x4000]);
+        return _rom[addr - 0x4000 + _selected_rom_bank * 0x4000];
+    }
+    if (in_range(addr, MBC1_range::switchableRamBank)) {
+        SPDLOG_INFO("MBC1 read addr: 0x{:04X}, data: 0x{:02X}", addr,
+                    _ram[addr - 0xA000 + _selected_ram_bank * 0x2000]);
+        return _ram[addr - 0xA000 + _selected_ram_bank * 0x2000];
+    }
+    return (0x00);
 };
 
 MBC2::MBC2(const std::vector<uint8_t> &data, const CartridgeHeader &header)
