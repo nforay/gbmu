@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 19:37:11 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 20:04:15 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ public:
     virtual ~Cpu();
 
     virtual void    reset();
-    virtual void    clock();
+    virtual uint8_t clock();
     virtual void    write(const uint16_t &addr, const uint8_t data);
     virtual uint8_t read(const uint16_t &addr) const;
-    void            execute(uint8_t opcode, Reg::Word &pc);
+    uint8_t         execute(uint8_t opcode, Reg::Word &pc);
     void            push(const Reg::BytePair &data);
     void            push(const uint16_t &val);
     void            pop(Reg::BytePair &reg);

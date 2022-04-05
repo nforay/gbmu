@@ -6,11 +6,11 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 17:29:53 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/05 15:47:44 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fstream>  //TODO: wrapper for cartridge
+#include <fstream>
 #include <unistd.h> //tmp usleep()
 
 #include "cartridge.hpp"
@@ -37,21 +37,21 @@ void Gbmu::reset() {
         component->reset();
     }
     _bus->reset();
+    _cycles = 0;
 }
 
 void Gbmu::run() {
     SPDLOG_INFO("Gbmu run");
     while (_ppu.get()->is_window_open()) {
         if (_ppu.get()->is_window_focused()) {
-            u_int8_t opcode = _cpu->read(_cpu->pc.get());
-            _cpu->pc.inc();
-            _cpu->execute(opcode, _cpu->pc);
-            usleep(1000 * 100);
             SPDLOG_INFO("Registers: af: 0x{:04X}, bc: 0x{:04X}, de: 0x{:04X}, hl: 0x{:04X}, sp: "
-                        "0x{:04X}, pc: 0x{:04X}",
+                        "0x{:04X}, pc: 0x{:04X} | Cycles: {}",
                         _cpu->af.get(), _cpu->bc.get(), _cpu->de.get(), _cpu->hl.get(),
-                        _cpu->sp.get(), _cpu->pc.get());
-            _ppu->clock();
+                        _cpu->sp.get(), _cpu->pc.get(), _cycles);
+            uint8_t cycles = _cpu->clock();
+            _cycles += cycles;
+            usleep(1000 * 100);
+            _ppu->clock(cycles);
         } else {
             usleep(100);
         }

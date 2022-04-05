@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:09:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 19:12:55 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/05 15:31:02 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,13 @@
 #include "logger.h"
 #include "registers.hpp"
 
+enum class VideoMode {
+    ACCESS_OAM = 0,
+    ACCESS_VRAM,
+    HBLANK,
+    VBLANK,
+};
+
 class Ppu : public Component {
 
 public:
@@ -25,7 +32,8 @@ public:
     virtual ~Ppu();
 
     virtual void    reset();
-    virtual void    clock();
+    virtual uint8_t clock() { return 0x00; };
+    virtual uint8_t clock(const uint8_t &cycles);
     virtual void    write(const uint16_t &addr, uint8_t data);
     virtual uint8_t read(const uint16_t &addr) const;
 
@@ -34,6 +42,8 @@ public:
 
 private:
     sf::RenderWindow _window;
+    uint             _cycles{0};
+    VideoMode        _mode{VideoMode::ACCESS_OAM};
     Reg::BytePtr     _LCDC  = Component::getPointer(0xFF40);
     Reg::BytePtr     _STAT  = Component::getPointer(0xFF41);
     Reg::BytePtr     _SCY   = Component::getPointer(0xFF42);
@@ -56,3 +66,8 @@ private:
     Reg::BytePtr     _OCPS  = Component::getPointer(0xFF6A);
     Reg::BytePtr     _OCPD  = Component::getPointer(0xFF6B);
 };
+
+const uint CLOCKS_PER_HBLANK        = 204;
+const uint CLOCKS_PER_SCANLINE_OAM  = 80;
+const uint CLOCKS_PER_SCANLINE_VRAM = 172;
+const uint CLOCKS_PER_SCANLINE      = 456;

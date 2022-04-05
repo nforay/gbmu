@@ -6,11 +6,12 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 19:47:37 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/04 20:05:35 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cpu.hpp"
+#include "opcode_cycles.hpp"
 #include "opcode_names.hpp"
 
 Cpu::Cpu(Bus *bus) : Component(bus) { SPDLOG_TRACE("Cpu Constructor"); }
@@ -31,9 +32,14 @@ void Cpu::reset() {
     pc.set(0x0100);
 }
 
-void Cpu::clock() { SPDLOG_TRACE("Cpu clock"); }
+uint8_t Cpu::clock() {
+    SPDLOG_TRACE("Cpu clock");
+    u_int8_t opcode = read(pc.get());
+    pc.inc();
+    return (execute(opcode, pc));
+}
 
-void Cpu::execute(uint8_t opcode, Reg::Word &pc) {
+uint8_t Cpu::execute(uint8_t opcode, Reg::Word &pc) {
     if (opcode != 0xCB) {
         SPDLOG_INFO("Cpu execute opcode 0x{:02X} : {}", opcode, opcode_names[opcode]);
         /* clang-format off */
@@ -56,6 +62,7 @@ void Cpu::execute(uint8_t opcode, Reg::Word &pc) {
             case 0xF0: opcode_F0(); break; case 0xF1: opcode_F1(); break; case 0xF2: opcode_F2(); break; case 0xF3: opcode_F3(); break; case 0xF4: opcode_F4(); break; case 0xF5: opcode_F5(); break; case 0xF6: opcode_F6(); break; case 0xF7: opcode_F7(); break; case 0xF8: opcode_F8(); break; case 0xF9: opcode_F9(); break; case 0xFA: opcode_FA(); break; case 0xFB: opcode_FB(); break; case 0xFC: opcode_FC(); break; case 0xFD: opcode_FD(); break; case 0xFE: opcode_FE(); break; case 0xFF: opcode_FF(); break;
         }
         /* clang-format on */
+        return (take_branch ? branched_opcode_cycles[opcode] : opcode_cycles[opcode]);
     } else {
         opcode = read(pc.get());
         pc.inc();
@@ -80,6 +87,7 @@ void Cpu::execute(uint8_t opcode, Reg::Word &pc) {
             case 0xF0: opcode_CB_F0(); break; case 0xF1: opcode_CB_F1(); break; case 0xF2: opcode_CB_F2(); break; case 0xF3: opcode_CB_F3(); break; case 0xF4: opcode_CB_F4(); break; case 0xF5: opcode_CB_F5(); break; case 0xF6: opcode_CB_F6(); break; case 0xF7: opcode_CB_F7(); break; case 0xF8: opcode_CB_F8(); break; case 0xF9: opcode_CB_F9(); break; case 0xFA: opcode_CB_FA(); break; case 0xFB: opcode_CB_FB(); break; case 0xFC: opcode_CB_FC(); break; case 0xFD: opcode_CB_FD(); break; case 0xFE: opcode_CB_FE(); break; case 0xFF: opcode_CB_FF(); break;
         }
         /* clang-format on */
+        return (opcode_cycles_cb[opcode]);
     }
 }
 
