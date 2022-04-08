@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:28:49 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/05 15:47:44 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/08 20:25:43 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,11 @@ void Gbmu::run() {
                         _cpu->sp.get(), _cpu->pc.get(), _cycles);
             uint8_t cycles = _cpu->clock();
             _cycles += cycles;
-            usleep(1000 * 100);
+            // usleep(1000 * 100);
             _ppu->clock(cycles);
         } else {
             usleep(100);
+            _ppu.get()->clock();
         }
     }
 }

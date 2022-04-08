@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 20:05:35 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/08 20:15:50 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ uint8_t Cpu::clock() {
 
 uint8_t Cpu::execute(uint8_t opcode, Reg::Word &pc) {
     if (opcode != 0xCB) {
-        SPDLOG_INFO("Cpu execute opcode 0x{:02X} : {}", opcode, opcode_names[opcode]);
+        SPDLOG_INFO("Cpu execute opcode 0x{:02X} : \e[32m{}\e[39m", opcode, opcode_names[opcode]);
         /* clang-format off */
         switch (opcode) {
             case 0x00: opcode_00(); break; case 0x01: opcode_01(); break; case 0x02: opcode_02(); break; case 0x03: opcode_03(); break; case 0x04: opcode_04(); break; case 0x05: opcode_05(); break; case 0x06: opcode_06(); break; case 0x07: opcode_07(); break; case 0x08: opcode_08(); break; case 0x09: opcode_09(); break; case 0x0A: opcode_0A(); break; case 0x0B: opcode_0B(); break; case 0x0C: opcode_0C(); break; case 0x0D: opcode_0D(); break; case 0x0E: opcode_0E(); break; case 0x0F: opcode_0F(); break;
@@ -66,7 +66,7 @@ uint8_t Cpu::execute(uint8_t opcode, Reg::Word &pc) {
     } else {
         opcode = read(pc.get());
         pc.inc();
-        SPDLOG_INFO("Cpu execute opcode 0x{:02X} : {}", opcode, opcode_CB_names[opcode]);
+        SPDLOG_INFO("Cpu execute opcode 0x{:02X} : \e[32m{}\e[39m", opcode, opcode_CB_names[opcode]);
         /* clang-format off */
         switch (opcode) {
             case 0x00: opcode_CB_00(); break; case 0x01: opcode_CB_01(); break; case 0x02: opcode_CB_02(); break; case 0x03: opcode_CB_03(); break; case 0x04: opcode_CB_04(); break; case 0x05: opcode_CB_05(); break; case 0x06: opcode_CB_06(); break; case 0x07: opcode_CB_07(); break; case 0x08: opcode_CB_08(); break; case 0x09: opcode_CB_09(); break; case 0x0A: opcode_CB_0A(); break; case 0x0B: opcode_CB_0B(); break; case 0x0C: opcode_CB_0C(); break; case 0x0D: opcode_CB_0D(); break; case 0x0E: opcode_CB_0E(); break; case 0x0F: opcode_CB_0F(); break;

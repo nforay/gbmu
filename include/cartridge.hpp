@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 18:53:24 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 17:42:57 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/07 19:21:25 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ public:
     uint8_t  _selected_ram_bank = 1;
     uint8_t  _ram_bank_count    = 0;
     uint8_t  _rom_bank_count    = 0;
-    uint8_t  lower              = 1;
-    uint8_t  upper              = 0;
+    uint8_t  _lower             = 1;
+    uint8_t  _upper             = 0;
 };
 
 class MBC2 : public Cartridge {

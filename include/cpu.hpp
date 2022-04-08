@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 20:04:15 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/07 19:06:33 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ public:
     void instr_ld(Reg::Byte &dst, const Reg::Byte &src);
     void instr_ld(Reg::Byte &dst, const Reg::BytePair &src);
     void instr_ld(const Reg::Word &dst, const Reg::Byte &src);
-    void instr_ld(const Reg::Word &dst);
+    void instr_ld(Reg::Word &dst);
     void instr_ld_nn_from(Reg::Byte &dst);
     void instr_ld_nn_to(Reg::Byte &dst);
     void instr_ld_a_c(Reg::Byte &a, const Reg::Byte &c);

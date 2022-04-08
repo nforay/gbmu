@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:27:58 by nforay            #+#    #+#             */
-/*   Updated: 2022/03/20 01:04:02 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/08 01:40:50 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void Cpu::opcode_32() { Cpu::instr_ld_hld_a(a); };
 void Cpu::opcode_33() { Cpu::instr_inc_nn(sp); };
 void Cpu::opcode_34() { Cpu::instr_inc(hl.get()); };
 void Cpu::opcode_35() { Cpu::instr_dec(hl.get()); };
-void Cpu::opcode_36() { Cpu::instr_ld(Reg::Word(h, l)); };
+void Cpu::opcode_36() { Cpu::instr_ld(hl); };
 void Cpu::opcode_37() { Cpu::instr_scf(); };
 void Cpu::opcode_38() { Cpu::instr_jr(Cpu::Condition::C); };
 void Cpu::opcode_39() { Cpu::instr_add_hl(sp); };

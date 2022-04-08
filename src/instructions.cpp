@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 19:46:39 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/08 01:45:20 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,15 @@ void Cpu::instr_ld(const Reg::Word &dst, const Reg::Byte &src) {
 };
 
 /**
- * @brief      Write 8-bit immediate value at dst.
+ * @brief      Write 16-bit immediate value at dst.
  * @param      dst The 16-bit destination address
  */
-void Cpu::instr_ld(const Reg::Word &dst) {
-    uint8_t value = Cpu::read(pc.get());
-    Cpu::write(dst.get(), value);
+void Cpu::instr_ld(Reg::Word &dst) {
+    uint16_t low = Cpu::read(pc.get());
+    pc.inc();
+    uint16_t high = Cpu::read(pc.get());
+    pc.inc();
+    dst.set(high << 8 | low);
 };
 
 /**

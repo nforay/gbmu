@@ -9,9 +9,13 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/build/gbmu",
-			"args": [],
+			"args": [
+				"-t",
+				"-f",
+				"roms/Zelda.gb"
+			],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
