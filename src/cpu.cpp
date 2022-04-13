@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:07:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/13 19:22:47 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/14 00:17:30 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,44 @@ void Cpu::reset() {
 
 uint8_t Cpu::clock() {
     SPDLOG_TRACE("Cpu clock");
+    handle_interrupts();
+    if (halted)
+        return 1;
     u_int8_t opcode = read(pc.get());
     pc.inc();
     return (execute(opcode, pc));
 }
 
-uint8_t Cpu::execute_normal(const uint8_t &opcode) {
+void Cpu::handle_interrupts() {
+    if (interrupt_master_enable) {
+        Reg::Byte interrupt_occured(interrupt_flag.get() & interrupt_enabled.get());
+        if (!interrupt_occured.get())
+            return;
+        halted = false;
+        push(pc.get());
+        if (check_interrupt(0, interrupt_occured, interrupts_jump::vblank))
+            return;
+        if (check_interrupt(1, interrupt_occured, interrupts_jump::lcdc_status))
+            return;
+        if (check_interrupt(2, interrupt_occured, interrupts_jump::timer)) // TODO: implement timer
+            return;
+        if (check_interrupt(3, interrupt_occured, interrupts_jump::serial)) // TODO: implement serial
+            return;
+        if (check_interrupt(4, interrupt_occured, interrupts_jump::joypad)) // TODO: implement joypad
+            return;
+    }
+}
+
+bool Cpu::check_interrupt(uint8_t interrupt_bit, const Reg::Byte &interrupt_occured, uint16_t interrupt_addr) {
+    if (!interrupt_occured.get_bit(interrupt_bit))
+        return (false);
+    interrupt_flag.set_bit(interrupt_bit, false);
+    pc.set(interrupt_addr);
+    interrupt_master_enable = false;
+    return (true);
+}
+
+uint8_t Cpu::execute_normal(uint8_t opcode) {
     SPDLOG_INFO("Cpu execute opcode 0x{:02X} : {}", opcode, opcode_names[opcode]);
     /* clang-format off */
     switch (opcode) {
@@ -64,7 +96,7 @@ uint8_t Cpu::execute_normal(const uint8_t &opcode) {
     return (take_branch ? branched_opcode_cycles[opcode] : opcode_cycles[opcode]);
 }
 
-uint8_t Cpu::execute_cb(const uint8_t &opcode) {
+uint8_t Cpu::execute_cb(uint8_t opcode) {
     SPDLOG_INFO("Cpu execute opcode 0x{:02X} : {}", opcode, opcode_CB_names[opcode]);
     /* clang-format off */
     switch (opcode) {

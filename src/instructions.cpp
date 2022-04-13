@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/13 18:11:56 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 23:49:51 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void Cpu::instr_nop(){};
  * @brief      Power down CPU until an interrupt occurs. Use this when ever
  * possible to reduce energy consumption.
  */
-void Cpu::instr_halt(){}; // TODO: Implement
+void Cpu::instr_halt() { halted = true; };
 
 /**
  * @brief      Halt CPU & LCD display until button pressed
@@ -32,13 +32,13 @@ void Cpu::instr_stop(){}; // TODO: Implement
  * @brief      This instruction disables interrupts but not immediately.
  * Interrupts are disabled after instruction after DI is executed.
  */
-void Cpu::instr_di(){}; // TODO: Implement
+void Cpu::instr_di() { interrupt_master_enable = false; };
 
 /**
  * @brief      Enable interrupts. This intruction enables interrupts but not
  * immediately. Interrupts are enabled after instruction after EI is executed.
  */
-void Cpu::instr_ei(){}; // TODO: Implement
+void Cpu::instr_ei() { interrupt_master_enable = true; };
 
 /**
  * 8bit load/store/move instructions *******************************************

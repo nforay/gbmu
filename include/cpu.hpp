@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/13 19:22:19 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/14 00:16:21 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 #include "component.hpp"
 #include "logger.h"
 #include "registers.hpp"
+
+namespace interrupts_jump {
+    const uint16_t vblank      = 0x40;
+    const uint16_t lcdc_status = 0x48;
+    const uint16_t timer       = 0x50;
+    const uint16_t serial      = 0x58;
+    const uint16_t joypad      = 0x60;
+}; // namespace interrupts_jump
 
 class Cpu : public Component {
     enum class Condition {
@@ -33,15 +41,21 @@ public:
     void    write(const uint16_t &addr, const uint8_t &data) override;
     uint8_t read(const uint16_t &addr) const override;
     uint8_t execute(uint8_t opcode, Reg::Word &pc);
-    uint8_t execute_normal(const uint8_t &opcode);
-    uint8_t execute_cb(const uint8_t &opcode);
+    uint8_t execute_normal(uint8_t opcode);
+    uint8_t execute_cb(uint8_t opcode);
     void    push(const Reg::BytePair &data);
     void    push(const uint16_t &val);
     void    pop(Reg::BytePair &data);
     void    pop(Reg::Word &reg);
     bool    test_condition(Condition cond);
+    void    handle_interrupts();
+    bool    check_interrupt(uint8_t, const Reg::Byte &, uint16_t);
 
-    bool take_branch = false;
+    bool         take_branch             = false;
+    bool         halted                  = false;
+    bool         interrupt_master_enable = false;
+    Reg::BytePtr interrupt_flag          = Component::getPointer(0xFF0F);
+    Reg::BytePtr interrupt_enabled       = Component::getPointer(0xFFFF);
 
     Reg::Flag f;
 
