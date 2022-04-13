@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 20:09:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 17:52:23 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 19:23:22 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,20 @@ Bus::Bus() { SPDLOG_TRACE("Bus Constructor"); }
 
 Bus::~Bus() { SPDLOG_TRACE("Bus Destructor"); }
 
-void Bus::write(const uint16_t &addr, const uint8_t data) {
+void Bus::write(const uint16_t &addr, const uint8_t &data) {
     if (addr >= 0x0000 && addr <= 0x7FFF) {
         SPDLOG_TRACE("Bus write: 0x{:04X} = 0x{:02X}", addr, data);
-        _cartridge.get()->write(addr, data);
+        _cartridge->write(addr, data);
     } else if (addr >= 0x8000 && addr <= 0x9FFF) {
         SPDLOG_TRACE("Bus write: 0x{:04X} = 0x{:02X}", addr, data);
         _ram[addr] = data;
     } else if (addr >= 0xA000 && addr <= 0xBFFF) {
         SPDLOG_TRACE("Bus write: 0x{:04X} = 0x{:02X}", addr, data);
-        _cartridge.get()->write(addr, data);
-    } else if (addr >= 0xC000 && addr <= 0xFFFF) {
+        _cartridge->write(addr, data);
+    } else if (addr >= 0xC000 && addr <= 0xDFFF) {
+        SPDLOG_TRACE("Bus write: 0x{:04X} = 0x{:02X}", addr, data);
+        _cartridge->write(addr, data);
+    } else if (addr >= 0xE000 && addr <= 0xFFFF) {
         SPDLOG_TRACE("Bus write: 0x{:04X} = 0x{:02X}", addr, data);
         _ram[addr] = data;
     } else {
@@ -44,20 +47,22 @@ uint8_t Bus::read(const uint16_t &addr) const {
     } else */
     if (addr <= 0x7FFF) {
         SPDLOG_TRACE("Bus read: 0x{:04X}", addr);
-        return _cartridge.get()->read(addr);
-    } else if (addr >= 0x8000 && addr <= 0x9FFF) {
-        SPDLOG_TRACE("Bus read: 0x{:04X} = 0x{:02X}", addr, _ram[addr]);
-        return _ram[addr];
-    } else if (addr >= 0xA000 && addr <= 0xBFFF) {
-        SPDLOG_TRACE("Bus read: 0x{:04X}", addr);
-        return _cartridge.get()->read(addr);
-    } else if (addr >= 0xC000 && addr <= 0xFFFF) {
-        SPDLOG_TRACE("Bus read: 0x{:04X} = 0x{:02X}", addr, _ram[addr]);
-        return _ram[addr];
-    } else {
-        SPDLOG_ERROR("Attempt to read in unmapped memory: 0x{:04X}", addr);
-        return 0x00;
+        return _cartridge->read(addr);
     }
+    if (addr >= 0x8000 && addr <= 0x9FFF) {
+        SPDLOG_TRACE("Bus read: 0x{:04X} = 0x{:02X}", addr, _ram[addr]);
+        return _ram[addr];
+    }
+    if (addr >= 0xA000 && addr <= 0xBFFF) {
+        SPDLOG_TRACE("Bus read: 0x{:04X}", addr);
+        return _cartridge->read(addr);
+    }
+    if (addr >= 0xC000 && addr <= 0xFFFF) {
+        SPDLOG_TRACE("Bus read: 0x{:04X} = 0x{:02X}", addr, _ram[addr]);
+        return _ram[addr];
+    }
+    SPDLOG_ERROR("Attempt to read in unmapped memory: 0x{:04X}", addr);
+    return 0x00;
 }
 
 void Bus::reset() {

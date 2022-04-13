@@ -1,13 +1,13 @@
 ---
 Checks: >
   -*,
+  clang-analyzer-*,
   bugprone-*,
+  -bugprone-easily-swappable-parameters,
   clang-diagnostic-*,
   -clang-diagnostic-unused-command-line-argument,
-  google-*,
-  -google-runtime-references,
-  -google-readability-todo,
-  -google-explicit-constructor,
+  llvm-*,
+  -llvm-header-guard,
   misc-*,
   -misc-noexcept*,
   -misc-unused-parameters,
@@ -35,4 +35,3 @@ Checks: >
 WarningsAsErrors: false
 AnalyzeTemporaryDtors: false
 FormatStyle:     file
-...

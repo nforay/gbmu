@@ -6,15 +6,13 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 17:19:22 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 19:13:39 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 18:21:53 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "registers.hpp"
 
 Reg::BytePtr::BytePtr(uint8_t *addr) : _ptr(addr) {}
-
-Reg::BytePtr::~BytePtr() {}
 
 uint8_t Reg::BytePtr::get() const { return *_ptr; }
 
@@ -36,8 +34,6 @@ void Reg::BytePtr::inc() { (*_ptr)++; }
 void Reg::BytePtr::dec() { (*_ptr)--; }
 
 Reg::Byte::Byte(uint8_t value) : _value(value) {}
-
-Reg::Byte::~Byte() {}
 
 uint8_t Reg::Byte::get() const { return _value; }
 
@@ -74,9 +70,7 @@ void Reg::Flag::set_half_carry(bool value) { set_bit(5, value); }
 
 void Reg::Flag::set_carry(bool value) { set_bit(4, value); }
 
-Reg::BytePair::BytePair(Byte &high, Byte &low) : _high(high), _low(low) {}
-
-Reg::BytePair::~BytePair() {}
+Reg::BytePair::BytePair(Reg::Byte &high, Reg::Byte &low) : _high(high), _low(low) {}
 
 Reg::Byte &Reg::BytePair::high() const { return _high; }
 
@@ -108,9 +102,7 @@ void Reg::BytePair::dec() {
 
 Reg::Word::Word(uint16_t value) : _value(value) {}
 
-Reg::Word::~Word() {}
-
-Reg::Word::Word(Byte &high, Byte &low) : _value(high.get() << 8 | low.get()) {}
+Reg::Word::Word(Reg::Byte &high, Reg::Byte &low) : _value(high.get() << 8 | low.get()) {}
 
 Reg::Word::Word(const uint8_t &high, const uint8_t &low) : _value(high << 8 | low) {}
 
@@ -126,6 +118,6 @@ void Reg::Word::inc() { _value++; }
 
 void Reg::Word::dec() { _value--; }
 
-uint8_t Reg::Word::low() { return _value & 0xFF; } // 00000000 11111111
+uint8_t Reg::Word::low() const { return _value & 0xFF; } // 00000000 11111111
 
-uint8_t Reg::Word::high() { return _value >> 8; }
+uint8_t Reg::Word::high() const { return _value >> 8; }

@@ -6,11 +6,13 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 18:53:54 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/08 00:12:30 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 22:50:09 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cartridge.hpp"
+
+#include <utility>
 
 auto in_range = [](const uint16_t &addr, const address_range &range) -> bool {
     return ((uint16_t)(addr - range.start) <= range.diff);
@@ -20,25 +22,24 @@ auto in_range = [](const uint16_t &addr, const address_range &range) -> bool {
     return (addr >= range.start && addr <= range.end);
 };*/
 
-Cartridge::Cartridge(const std::vector<uint8_t> &data, const CartridgeHeader &header)
-    : _header(header), _rom(data) {
+Cartridge::Cartridge(std::vector<uint8_t> &data, CartridgeHeader &header)
+    : _header(std::move(header)), _rom(std::move(data)) {
     SPDLOG_TRACE("Cartridge Constructor");
     SPDLOG_INFO("Cartridge Title: \"{}\"", _header.title);
     SPDLOG_INFO("Cartridge Type: 0x{:01X}", (uint8_t)_header.cartridgeType);
     SPDLOG_INFO("Cartridge Rom Size: 0x{:01X} ({}B)", (uint8_t)_header.romSize,
                 0x8000 << (uint8_t)_header.romSize);
     SPDLOG_INFO("Cartridge Ram Size: 0x{:01X} ({}B)", (uint8_t)_header.ramSize, _header.getRamSize());
-    SPDLOG_INFO("Cartridge Header Checksum isvalid: {}", checkHeaderChecksum(data) ? "true" : "false");
-    SPDLOG_INFO("Cartridge Global Checksum isvalid: {}", checkGlobalChecksum(data) ? "true" : "false");
+    SPDLOG_INFO("Cartridge Header Checksum isvalid: {}", checkHeaderChecksum(_rom) ? "true" : "false");
+    SPDLOG_INFO("Cartridge Global Checksum isvalid: {}", checkGlobalChecksum(_rom) ? "true" : "false");
 }
 
 Cartridge::~Cartridge() { SPDLOG_TRACE("Cartridge Destructor"); }
 
-MBC1::MBC1(const std::vector<uint8_t> &data, const CartridgeHeader &header)
-    : Cartridge(data, header) {
+MBC1::MBC1(std::vector<uint8_t> &data, CartridgeHeader &header) : Cartridge(data, header) {
     SPDLOG_TRACE("MBC1 Constructor");
-    _ram.resize(_header.getRamSize() * 2);
-    _rom_bank_count = (data.size() / 0x4000) + (data.size() % 0x4000 ? 1 : 0);
+    _ram.resize(_header.getRamSize());
+    _rom_bank_count = (_rom.size() / 0x4000) + (_rom.size() % 0x4000 ? 1 : 0);
     _ram_bank_count = _header.getRamSize() / 0x2000;
 };
 
@@ -58,7 +59,7 @@ void MBC1::write(const uint16_t &addr, uint8_t data) {
         _selected_rom_bank = ((_upper << 3) | (_lower & 0x1F));
         SPDLOG_CRITICAL("MBC1: selected rom bank: 0x{:02X}", _selected_rom_bank);
         if (_selected_rom_bank > _rom_bank_count)
-            SPDLOG_CRITICAL("MBC1: selected rom bank is out of range");
+            SPDLOG_CRITICAL("MBC1: selected rom bank is out of range ({})", _selected_rom_bank);
     } else if (in_range(addr, MBC1_range::ramBankSelect)) {
         if (!_ram.empty() && _mode == BankMode::RAM && _ram_enabled)
             _selected_ram_bank = data;
@@ -67,7 +68,7 @@ void MBC1::write(const uint16_t &addr, uint8_t data) {
             _selected_ram_bank = ((_upper << 3) | (_lower & 0x1F)); // need safety check
         }
         if (_selected_ram_bank > _ram_bank_count)
-            SPDLOG_CRITICAL("MBC1: selected ram bank is out of range");
+            SPDLOG_CRITICAL("MBC1: selected ram bank is out of range ({})", _selected_ram_bank);
     } else if (in_range(addr, MBC1_range::bankingmode))
         _mode = (data ? BankMode::RAM : BankMode::ROM);
 }
@@ -79,7 +80,7 @@ uint8_t MBC1::read(const uint16_t &addr) const {
         return _rom[addr];
     }
     if (in_range(addr, MBC1_range::switchableRomBank)) {
-        SPDLOG_INFO("SROM debug: 0x{:04X}", (addr - 0x4000 + _selected_rom_bank * 0x4000));
+        SPDLOG_INFO("SROM debug: 0x{:04X} -> 0x{:04X}", addr, (addr - 0x4000 + _selected_rom_bank * 0x4000));
         SPDLOG_INFO("MBC1 read Switchable ROM addr: 0x{:04X}, data: 0x{:02X}",
                     (addr - 0x4000 + _selected_rom_bank * 0x4000),
                     _rom[addr - 0x4000 + _selected_rom_bank * 0x4000]);
@@ -95,8 +96,7 @@ uint8_t MBC1::read(const uint16_t &addr) const {
     return (0x00);
 };
 
-MBC2::MBC2(const std::vector<uint8_t> &data, const CartridgeHeader &header)
-    : Cartridge(data, header) {
+MBC2::MBC2(std::vector<uint8_t> &data, CartridgeHeader &header) : Cartridge(data, header) {
     SPDLOG_TRACE("MBC2 Constructor");
 };
 
@@ -112,8 +112,7 @@ uint8_t MBC2::read(const uint16_t &addr) const {
     return _rom[addr];
 };
 
-MBC3::MBC3(const std::vector<uint8_t> &data, const CartridgeHeader &header)
-    : Cartridge(data, header) {
+MBC3::MBC3(std::vector<uint8_t> &data, CartridgeHeader &header) : Cartridge(data, header) {
     SPDLOG_TRACE("MBC3 Constructor");
 };
 
@@ -129,8 +128,7 @@ uint8_t MBC3::read(const uint16_t &addr) const {
     return _rom[addr];
 };
 
-MBC5::MBC5(const std::vector<uint8_t> &data, const CartridgeHeader &header)
-    : Cartridge(data, header) {
+MBC5::MBC5(std::vector<uint8_t> &data, CartridgeHeader &header) : Cartridge(data, header) {
     SPDLOG_TRACE("MBC5 Constructor");
 };
 

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:05:43 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/07 19:06:33 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 19:22:19 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,20 @@ class Cpu : public Component {
 
 public:
     Cpu(Bus *bus);
-    virtual ~Cpu();
+    ~Cpu() override;
 
-    virtual void    reset();
-    virtual uint8_t clock();
-    virtual void    write(const uint16_t &addr, const uint8_t data);
-    virtual uint8_t read(const uint16_t &addr) const;
-    uint8_t         execute(uint8_t opcode, Reg::Word &pc);
-    void            push(const Reg::BytePair &data);
-    void            push(const uint16_t &val);
-    void            pop(Reg::BytePair &reg);
-    void            pop(Reg::Word &reg);
-    bool            test_condition(Condition cond);
+    void    reset() override;
+    uint8_t clock() override;
+    void    write(const uint16_t &addr, const uint8_t &data) override;
+    uint8_t read(const uint16_t &addr) const override;
+    uint8_t execute(uint8_t opcode, Reg::Word &pc);
+    uint8_t execute_normal(const uint8_t &opcode);
+    uint8_t execute_cb(const uint8_t &opcode);
+    void    push(const Reg::BytePair &data);
+    void    push(const uint16_t &val);
+    void    pop(Reg::BytePair &data);
+    void    pop(Reg::Word &reg);
+    bool    test_condition(Condition cond);
 
     bool take_branch = false;
 
@@ -68,7 +70,7 @@ public:
     void instr_jr(Condition cc);
     void instr_call();
     void instr_call(Condition cc);
-    void instr_rst(const uint8_t offset);
+    void instr_rst(uint8_t offset);
     void instr_ret();
     void instr_ret(Condition cc);
     void instr_reti();
@@ -76,12 +78,12 @@ public:
     /* 8bit load/store/move instructions */
     void instr_ld(Reg::Byte &dst);
     void instr_ld(Reg::Byte &dst, const Reg::Byte &src);
-    void instr_ld(Reg::Byte &dst, const Reg::BytePair &src);
+    void instr_ld(Reg::Byte &dst, const Reg::BytePair &src) const;
     void instr_ld(const Reg::Word &dst, const Reg::Byte &src);
     void instr_ld(Reg::Word &dst);
     void instr_ld_nn_from(Reg::Byte &dst);
-    void instr_ld_nn_to(Reg::Byte &dst);
-    void instr_ld_a_c(Reg::Byte &a, const Reg::Byte &c);
+    void instr_ld_nn_to(Reg::Byte &src);
+    void instr_ld_a_c(Reg::Byte &a, const Reg::Byte &c) const;
     void instr_ld_c_a(const Reg::Byte &c, const Reg::Byte &a);
     void instr_ld_a_hld(Reg::Byte &a);
     void instr_ld_hld_a(Reg::Byte &a);

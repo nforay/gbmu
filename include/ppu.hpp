@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:09:13 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/08 17:21:45 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/11 18:29:51 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,16 @@ public:
     bool is_window_open() const;
     bool is_window_focused() const;
     void update_tile_data(const uint16_t &addr, const uint8_t &data);
+    void display_scanline();
 
 private:
     sf::RenderWindow       _window;
     sf::RenderWindow       _background_map_window;
     sf::RenderWindow       _tile_data_window;
+    sf::Sprite             _tile_data_sprite;
+    sf::Texture            _tile_data_texture;
     sf::Image              _tile_data;
+    sf::Font               _font;
     std::vector<sf::Uint8> _vram{std::vector<sf::Uint8>(128 * 128 * 4, 0xFF)};
     uint                   _cycles{0};
     VideoMode              _mode{VideoMode::ACCESS_OAM};

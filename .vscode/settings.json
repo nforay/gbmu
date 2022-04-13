@@ -74,5 +74,11 @@
 	"editor.formatOnSave": true,
 	"editor.tabSize": 4,
 	"editor.insertSpaces": true,
-	"editor.rulers": [100],
+	"editor.rulers": [
+		100
+	],
+	"C_Cpp.codeAnalysis.clangTidy.enabled": true,
+	"clang-tidy.buildPath": "build/",
+	"clang-tidy.fixOnSave": true,
+	"C_Cpp.codeAnalysis.clangTidy.headerFilter": "^.*(?:deps).*",
 }

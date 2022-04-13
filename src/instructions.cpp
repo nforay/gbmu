@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/08 01:45:20 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 18:11:56 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,9 @@ void Cpu::instr_ld(Reg::Byte &dst, const Reg::Byte &src) { dst.set(src.get()); }
  * @param      dst  The 8-bit destination register
  * @param      src  The 16-bit source register pair (HL)
  */
-void Cpu::instr_ld(Reg::Byte &dst, const Reg::BytePair &src) { dst.set(Cpu::read(src.get())); };
+void Cpu::instr_ld(Reg::Byte &dst, const Reg::BytePair &src) const {
+    dst.set(Cpu::read(src.get()));
+};
 
 /**
  * @brief      Write value from src at dst.
@@ -118,7 +120,7 @@ void Cpu::instr_ld_nn_to(Reg::Byte &src) {
  * @param      dst The 8-bit A register
  * @param      dst The 8-bit C register
  */
-void Cpu::instr_ld_a_c(Reg::Byte &a, const Reg::Byte &c) {
+void Cpu::instr_ld_a_c(Reg::Byte &a, const Reg::Byte &c) const {
     uint8_t value = Cpu::read(0xFF00 + c.get());
     a.set(value);
 };
@@ -219,11 +221,11 @@ void Cpu::instr_ld_hl_sp_n() {
     uint8_t n = Cpu::read(pc.get());
     pc.inc();
     hl.set(sp.get() + n);
-    f.set_zero(0);
-    f.set_sub(0);
+    f.set_zero(false);
+    f.set_sub(false);
     // HACK: needs research
-    f.set_half_carry(0); // check behaviour
-    f.set_carry(0);      // check behaviour
+    f.set_half_carry(false); // check behaviour
+    f.set_carry(false);      // check behaviour
 };
 
 /**
@@ -266,7 +268,7 @@ void Cpu::instr_add(const Reg::Byte &src) {
     uint16_t value = a.get() + src.get();
     a.set(value & 0x00FF);
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry(value > 0xF); // check behaviour
     f.set_carry(value & 0x100);    // check behaviour
 };
@@ -278,7 +280,7 @@ void Cpu::instr_add(const uint16_t &addr) {
     uint16_t value = a.get() + read(addr);
     a.set(value & 0x00FF);
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry(value > 0xF); // check behaviour
     f.set_carry(value & 0x100);    // check behaviour
 };
@@ -291,7 +293,7 @@ void Cpu::instr_add_n() {
     pc.inc();
     a.set(value & 0x00FF);
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry(value > 0xF); // check behaviour
     f.set_carry(value & 0x100);    // check behaviour
 };
@@ -302,7 +304,7 @@ void Cpu::instr_add_n() {
 void Cpu::instr_adc(const Reg::Byte &src) {
     uint16_t value = a.get() + src.get() + f.get_carry();
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry((a.get() & 0xF + src.get() & 0xF + f.get_carry()) > 0xF); // check behaviour
     f.set_carry(value & 0x100);                                                // check behaviour
     a.set(value & 0x00FF);
@@ -315,7 +317,7 @@ void Cpu::instr_adc(const uint16_t &addr) {
     uint8_t  tmp   = read(addr);
     uint16_t value = a.get() + tmp + f.get_carry();
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry((a.get() & 0xF + tmp & 0xF + f.get_carry()) > 0xF); // check behaviour
     f.set_carry(value & 0x100);                                          // check behaviour
     a.set(value & 0x00FF);
@@ -329,7 +331,7 @@ void Cpu::instr_adc_n() {
     pc.inc();
     uint16_t value = a.get() + tmp + f.get_carry();
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry((a.get() & 0xF + tmp & 0xF + f.get_carry()) > 0xF); // check behaviour
     f.set_carry(value & 0x100);                                          // check behaviour
     a.set(value & 0x00FF);
@@ -341,7 +343,7 @@ void Cpu::instr_adc_n() {
 void Cpu::instr_sub(const Reg::Byte &src) {
     uint8_t value = a.get() - src.get();
     f.set_zero(value == 0);
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry((a.get() & 0xF - src.get() & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < src.get());                        // check behaviour Set if no borrow.
     a.set(value);
@@ -354,7 +356,7 @@ void Cpu::instr_sub(const uint16_t &addr) {
     uint8_t tmp   = read(addr);
     uint8_t value = a.get() - tmp;
     f.set_zero(value == 0);
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < tmp);                        // check behaviour Set if no borrow.
     a.set(value);
@@ -368,7 +370,7 @@ void Cpu::instr_sub_n() {
     pc.inc();
     uint8_t value = a.get() - tmp;
     f.set_zero(value == 0);
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry((a.get() & 0xF - tmp & 0xF) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < tmp);                        // check behaviour Set if no borrow.
     a.set(value);
@@ -380,7 +382,7 @@ void Cpu::instr_sub_n() {
 void Cpu::instr_sbc(const Reg::Byte &src) {
     uint8_t value = a.get() - src.get() - f.get_carry();
     f.set_zero(value == 0);
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry((a.get() & 0xF - src.get() & 0xF - f.get_carry()) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < src.get()); // check behaviour Set if no borrow.
     a.set(value);
@@ -393,7 +395,7 @@ void Cpu::instr_sbc(const uint16_t &addr) {
     uint8_t tmp   = read(addr);
     uint8_t value = a.get() - tmp - f.get_carry();
     f.set_zero(value == 0);
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry((a.get() & 0xF - tmp & 0xF - f.get_carry()) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < tmp); // check behaviour Set if no borrow.
     a.set(value);
@@ -407,7 +409,7 @@ void Cpu::instr_sbc_n() {
     pc.inc();
     uint8_t value = a.get() - tmp - f.get_carry();
     f.set_zero(value == 0);
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry((a.get() & 0xF - tmp & 0xF - f.get_carry()) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < tmp); // check behaviour Set if no borrow.
     a.set(value);
@@ -419,9 +421,9 @@ void Cpu::instr_sbc_n() {
 void Cpu::instr_and(const Reg::Byte &src) {
     a.set(a.get() & src.get());
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(1);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(true);
+    f.set_carry(false);
 };
 
 /**
@@ -430,9 +432,9 @@ void Cpu::instr_and(const Reg::Byte &src) {
 void Cpu::instr_and(const uint16_t &addr) {
     a.set(a.get() & read(addr));
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(1);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(true);
+    f.set_carry(false);
 };
 
 /**
@@ -442,9 +444,9 @@ void Cpu::instr_and_n() {
     a.set(a.get() & read(pc.get()));
     pc.inc();
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(1);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(true);
+    f.set_carry(false);
 };
 
 /**
@@ -453,9 +455,9 @@ void Cpu::instr_and_n() {
 void Cpu::instr_or(const Reg::Byte &src) {
     a.set(a.get() | src.get());
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(false);
 };
 
 /**
@@ -464,9 +466,9 @@ void Cpu::instr_or(const Reg::Byte &src) {
 void Cpu::instr_or(const uint16_t &addr) {
     a.set(a.get() | read(addr));
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(false);
 };
 
 /**
@@ -476,9 +478,9 @@ void Cpu::instr_or_n() {
     a.set(a.get() | read(pc.get()));
     pc.inc();
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(false);
 };
 
 /**
@@ -487,9 +489,9 @@ void Cpu::instr_or_n() {
 void Cpu::instr_xor(const Reg::Byte &src) {
     a.set(a.get() ^ src.get());
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(false);
 };
 
 /**
@@ -499,9 +501,9 @@ void Cpu::instr_xor(const Reg::Byte &src) {
 void Cpu::instr_xor(const uint16_t &addr) {
     a.set(a.get() ^ read(addr));
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(false);
 };
 
 /**
@@ -511,9 +513,9 @@ void Cpu::instr_xor_n() {
     a.set(a.get() ^ read(pc.get()));
     pc.inc();
     f.set_zero(a.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(false);
 };
 
 /**
@@ -522,7 +524,7 @@ void Cpu::instr_xor_n() {
  */
 void Cpu::instr_cp(const Reg::Byte &src) {
     f.set_zero(a.get() == src.get());
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry(((a.get() & 0xF) - (src.get() & 0xF)) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < src.get());
 };
@@ -534,7 +536,7 @@ void Cpu::instr_cp(const Reg::Byte &src) {
 void Cpu::instr_cp(const uint16_t &addr) {
     uint8_t tmp = read(addr);
     f.set_zero(tmp == a.get());
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry(((a.get() & 0xF) - (tmp & 0xF)) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < tmp);
 };
@@ -547,7 +549,7 @@ void Cpu::instr_cp_n() {
     uint8_t tmp = read(pc.get());
     pc.inc();
     f.set_zero(tmp == a.get());
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry(((a.get() & 0xF) - (tmp & 0xF)) < 0); // check behaviour Set if no borrow from bit 4.
     f.set_carry(a.get() < tmp);
 };
@@ -558,7 +560,7 @@ void Cpu::instr_cp_n() {
 void Cpu::instr_inc(Reg::Byte &src) {
     src.inc();
     f.set_zero(src.get() == 0);
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry((src.get() & 0x0F) == 0); // check behaviour Set if carry from bit 3.
 };
 
@@ -569,7 +571,7 @@ void Cpu::instr_inc(const uint16_t &addr) {
     uint8_t tmp = static_cast<uint8_t>(read(addr) + 1);
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry((tmp & 0x0F) == 0); // check behaviour Set if carry from bit 3.
 };
 
@@ -579,7 +581,7 @@ void Cpu::instr_inc(const uint16_t &addr) {
 void Cpu::instr_dec(Reg::Byte &src) {
     src.dec();
     f.set_zero(src.get() == 0);
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry((src.get() & 0x0F) == 0x0F); // check behaviour Set if no borrow from bit 4.
 };
 
@@ -590,7 +592,7 @@ void Cpu::instr_dec(const uint16_t &addr) {
     uint8_t tmp = static_cast<uint8_t>(read(addr) - 1);
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(1);
+    f.set_sub(true);
     f.set_half_carry((tmp & 0x0F) == 0x0F); // check behaviour Set if no borrow from bit 4.
 };
 
@@ -604,7 +606,7 @@ void Cpu::instr_dec(const uint16_t &addr) {
  */
 void Cpu::instr_add_hl(const Reg::BytePair &src) {
     uint32_t value = hl.get() + src.get();
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry((hl.get() & 0xFFF + src.get() & 0xFFF) > 0xFFF); // check behaviour
     f.set_carry((value & 0x1000) != 0);                               // check behaviour
     hl.set(value & 0xFFFF);
@@ -616,7 +618,7 @@ void Cpu::instr_add_hl(const Reg::BytePair &src) {
  */
 void Cpu::instr_add_hl(const Reg::Word &src) {
     uint32_t value = hl.get() + src.get();
-    f.set_sub(0);
+    f.set_sub(false);
     f.set_half_carry((hl.get() & 0xFFF + src.get() & 0xFFF) > 0xFFF); // check behaviour
     f.set_carry((value & 0x1000) != 0);                               // check behaviour
     hl.set(value & 0xFFFF);
@@ -628,10 +630,10 @@ void Cpu::instr_add_hl(const Reg::Word &src) {
 void Cpu::instr_add_sp_n() {
     uint32_t value = sp.get() + read(pc.get());
     pc.inc();
-    f.set_zero(0);
-    f.set_sub(0);
-    f.set_half_carry(0); // TODO: needs reasearch
-    f.set_carry(0);      // TODO: needs reasearch
+    f.set_zero(false);
+    f.set_sub(false);
+    f.set_half_carry(false); // TODO: needs reasearch
+    f.set_carry(false);      // TODO: needs reasearch
     sp.set(value & 0xFFFF);
 };
 
@@ -665,7 +667,7 @@ void Cpu::instr_daa() {
     if (!f.get_sub()) { // after an addition, adjust if (half-)carry occurred or if result is out of bounds
         if (f.get_carry() || tmp > 0x99) {
             tmp += 0x60;
-            f.set_carry(1);
+            f.set_carry(true);
         }
         if (f.get_half_carry() || (tmp & 0x0f) > 0x09) {
             tmp += 0x6;
@@ -680,7 +682,7 @@ void Cpu::instr_daa() {
     }
     a.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_half_carry(0);
+    f.set_half_carry(false);
 };
 
 /**
@@ -688,8 +690,8 @@ void Cpu::instr_daa() {
  */
 void Cpu::instr_cpl() {
     a.set(~a.get());
-    f.set_sub(1);
-    f.set_half_carry(1);
+    f.set_sub(true);
+    f.set_half_carry(true);
 };
 
 /**
@@ -697,8 +699,8 @@ void Cpu::instr_cpl() {
  *  If C flag is reset, then set it.
  */
 void Cpu::instr_ccf() {
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
     f.set_carry(!f.get_carry());
 };
 
@@ -706,9 +708,9 @@ void Cpu::instr_ccf() {
  * @brief      Set Carry flag.
  */
 void Cpu::instr_scf() {
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(1);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(true);
 };
 
 /**
@@ -723,9 +725,9 @@ void Cpu::instr_swap(Reg::Byte &src) {
     tmp         = ((tmp & 0x0F) << 4 | (tmp & 0xF0) >> 4);
     src.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(false);
 };
 
 /**
@@ -736,9 +738,9 @@ void Cpu::instr_swap(const uint16_t &addr) {
     tmp         = ((tmp & 0x0F) << 4 | (tmp & 0xF0) >> 4);
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
-    f.set_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
+    f.set_carry(false);
 };
 
 /**
@@ -750,8 +752,8 @@ void Cpu::instr_rlca() {
     tmp = (tmp << 1) | (f.get_carry() ? 1 : 0);
     a.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -763,8 +765,8 @@ void Cpu::instr_rla() {
     tmp         = (tmp << 1) | c;
     a.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
     f.set_carry((tmp & 0x80) >> 7);
 };
 
@@ -777,8 +779,8 @@ void Cpu::instr_rrca() {
     tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
     a.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -790,8 +792,8 @@ void Cpu::instr_rra() {
     tmp         = (tmp >> 1) | (c ? 0x80 : 0);
     a.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
     f.set_carry(tmp & 0x01);
 };
 
@@ -804,8 +806,8 @@ void Cpu::instr_rlc(Reg::Byte &src) {
     tmp = (tmp << 1) | (f.get_carry() ? 1 : 0);
     src.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -817,8 +819,8 @@ void Cpu::instr_rlc(const uint16_t &addr) {
     tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -830,8 +832,8 @@ void Cpu::instr_rl(Reg::Byte &src) {
     tmp         = (tmp << 1) | c;
     src.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
     f.set_carry((tmp & 0x80) >> 7);
 };
 
@@ -844,8 +846,8 @@ void Cpu::instr_rl(const uint16_t &addr) {
     tmp         = (tmp << 1) | c;
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
     f.set_carry((tmp & 0x80) >> 7);
 };
 
@@ -858,8 +860,8 @@ void Cpu::instr_rrc(Reg::Byte &src) {
     tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
     src.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -871,8 +873,8 @@ void Cpu::instr_rrc(const uint16_t &addr) {
     tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -884,8 +886,8 @@ void Cpu::instr_rr(Reg::Byte &src) {
     tmp         = (tmp >> 1) | (c ? 0x80 : 0);
     src.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
     f.set_carry(tmp & 0x01);
 };
 
@@ -898,8 +900,8 @@ void Cpu::instr_rr(const uint16_t &addr) {
     tmp         = (tmp >> 1) | (c ? 0x80 : 0);
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
     f.set_carry(tmp & 0x01);
 };
 
@@ -912,8 +914,8 @@ void Cpu::instr_sla(Reg::Byte &src) {
     tmp = (tmp << 1);
     src.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -925,8 +927,8 @@ void Cpu::instr_sla(const uint16_t &addr) {
     tmp = (tmp << 1);
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -938,8 +940,8 @@ void Cpu::instr_sra(Reg::Byte &src) {
     tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
     src.set(tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -951,8 +953,8 @@ void Cpu::instr_sra(const uint16_t &addr) {
     tmp = (tmp >> 1) | (f.get_carry() ? 0x80 : 0);
     write(addr, tmp);
     f.set_zero(tmp == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -963,8 +965,8 @@ void Cpu::instr_srl(Reg::Byte &src) {
     f.set_carry(least_bit);
     src.set(src.get() >> 1);
     f.set_zero(src.get() == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -975,8 +977,8 @@ void Cpu::instr_srl(const uint16_t &addr) {
     f.set_carry(least_bit);
     write(addr, read(addr) >> 1);
     f.set_zero(read(addr) == 0);
-    f.set_sub(0);
-    f.set_half_carry(0);
+    f.set_sub(false);
+    f.set_half_carry(false);
 };
 
 /**
@@ -987,8 +989,8 @@ void Cpu::instr_srl(const uint16_t &addr) {
  */
 void Cpu::instr_bit(uint8_t b, Reg::Byte &reg) {
     f.set_zero(!(reg.get() & (1 << b)));
-    f.set_sub(0);
-    f.set_half_carry(1);
+    f.set_sub(false);
+    f.set_half_carry(true);
 };
 
 /**
@@ -999,8 +1001,8 @@ void Cpu::instr_bit(uint8_t b, Reg::Byte &reg) {
  */
 void Cpu::instr_bit(uint8_t b, const uint16_t &addr) {
     f.set_zero(!(read(addr) & (1 << b)));
-    f.set_sub(0);
-    f.set_half_carry(1);
+    f.set_sub(false);
+    f.set_half_carry(true);
 };
 
 /**
@@ -1079,7 +1081,7 @@ void Cpu::instr_jp(const Reg::BytePair &addr) { pc.set(addr.get()); };
  * @brief      Add n (signed) to current address and jump to it.
  */
 void Cpu::instr_jr() {
-    int8_t offset = read(pc.get());
+    int8_t offset = static_cast<int8_t>(read(pc.get()));
     pc.inc();
     pc.set(pc.get() + offset);
 };

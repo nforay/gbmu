@@ -4,6 +4,7 @@ build/
 roms/
 .gdb_history
 massif.out.*
+logs/
 
 ##### Precompiled Headers
 *.gch   binary

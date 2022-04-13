@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 16:55:20 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 18:52:19 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 18:55:05 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ namespace Reg {
     class BytePtr {
     public:
         BytePtr(uint8_t *addr);
-        ~BytePtr();
+        ~BytePtr() = default;
 
         uint8_t get() const;
         bool    get_bit(uint8_t bit) const;
@@ -36,7 +36,7 @@ namespace Reg {
     public:
         Byte() = default;
         Byte(uint8_t value);
-        ~Byte();
+        ~Byte() = default;
 
         uint8_t get() const;
         bool    get_bit(uint8_t bit) const;
@@ -65,7 +65,7 @@ namespace Reg {
     class BytePair {
     public:
         BytePair(Byte &high, Byte &low);
-        ~BytePair();
+        ~BytePair() = default;
 
         Byte &   high() const;
         Byte &   low() const;
@@ -86,7 +86,7 @@ namespace Reg {
         Word(uint16_t value);
         Word(Byte &high, Byte &low);
         Word(const uint8_t &high, const uint8_t &low);
-        ~Word();
+        ~Word() = default;
 
         uint16_t get() const;
         bool     get_bit(uint8_t bit) const;
@@ -94,8 +94,8 @@ namespace Reg {
         void     reset();
         void     inc();
         void     dec();
-        uint8_t  low();
-        uint8_t  high();
+        uint8_t  low() const;
+        uint8_t  high() const;
 
     private:
         uint16_t _value = 0;

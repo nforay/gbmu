@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 17:05:07 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/04 20:03:53 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 18:58:52 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ public:
 
     virtual void    reset() = 0;
     virtual uint8_t clock() = 0;
-    virtual void    write(const uint16_t &addr, const uint8_t data);
+    virtual void    write(const uint16_t &addr, const uint8_t &data);
     virtual uint8_t read(const uint16_t &addr) const;
 
 protected:

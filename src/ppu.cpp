@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 19:09:10 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/08 22:47:06 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 23:01:02 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Ppu::Ppu(Bus *bus) : Component(bus) {
     _background_map_window.create(sf::VideoMode(256, 256), "Background Map");
     _tile_data_window.create(sf::VideoMode(128, 128), "Tile data");
     _tile_data.create(128, 128, sf::Color::Black);
+    _font.loadFromFile("roms/victormono.ttf");
 }
 
 Ppu::~Ppu() { SPDLOG_TRACE("Ppu Destructor"); }
@@ -45,11 +46,27 @@ void Ppu::reset() {
     for (int i = 0; i < 16; i++) {
         write(0x8000 + i, tmp_vram[i]);
     }
+    sf::Image test;
+    test.create(128, 128, &_vram[0]);
+    _tile_data_texture.loadFromImage(test);
 }
 
 bool Ppu::is_window_open() const { return _window.isOpen(); }
 
 bool Ppu::is_window_focused() const { return _window.hasFocus(); }
+
+#include <sstream>
+void Ppu::display_scanline() {
+    std::stringstream ss;
+    ss << "Scanline: " << (int)_LY.get();
+    sf::Text text;
+    text.setString(ss.str());
+    text.setFont(_font);
+    text.setFillColor(sf::Color::White);
+    _window.clear();
+    _window.draw(text);
+    _window.display();
+}
 
 uint8_t Ppu::clock(const uint8_t &cycles) {
     SPDLOG_TRACE("Ppu clock - cycles = {} + {}", _cycles, cycles);
@@ -77,7 +94,7 @@ uint8_t Ppu::clock(const uint8_t &cycles) {
         if (_cycles >= CLOCKS_PER_HBLANK) {
             _LY.inc();
             SPDLOG_INFO("Incrementing Current Scanline to {}", _LY.get());
-            _window.setTitle("GBMU - Scanline " + std::to_string(_LY.get()));
+            display_scanline();
             _cycles = _cycles % CLOCKS_PER_HBLANK;
             if (_LY.get() == 144) {
                 _mode = VideoMode::VBLANK;
@@ -96,7 +113,7 @@ uint8_t Ppu::clock(const uint8_t &cycles) {
         if (_cycles >= CLOCKS_PER_SCANLINE) {
             _LY.inc();
             SPDLOG_INFO("Incrementing Current Scanline to {}", _LY.get());
-            _window.setTitle("GBMU - Scanline " + std::to_string(_LY.get()));
+            display_scanline();
             _cycles = _cycles % CLOCKS_PER_SCANLINE;
             if (_LY.get() == 154) {
                 // drawing screen happens here
@@ -117,16 +134,17 @@ uint8_t Ppu::clock(const uint8_t &cycles) {
             _window.close();
             _background_map_window.close();
             _tile_data_window.close();
+        } else if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Space) {
+                _tile_data_sprite.setTexture(_tile_data_texture);
+                _tile_data_sprite.scale((float)_tile_data_window.getSize().x /
+                                            (float)_tile_data.getSize().x,
+                                        (float)_tile_data_window.getSize().y /
+                                            (float)_tile_data.getSize().y);
+                _tile_data_window.draw(_tile_data_sprite);
+                _tile_data_window.display();
+            }
         }
-    }
-    if (_tile_data_window.hasFocus()) {
-        sf::Image test;
-        test.create(128, 128, &_vram[0]);
-        sf::Texture texture;
-        texture.loadFromImage(test);
-        sf::Sprite sprite(texture);
-        _tile_data_window.draw(sprite);
-        _tile_data_window.display();
     }
     return (0x00);
 }

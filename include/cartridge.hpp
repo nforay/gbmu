@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/24 18:53:24 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/07 19:21:25 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/13 22:51:00 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ public:
     virtual uint8_t read(const uint16_t &addr) const          = 0;
 
 protected:
-    Cartridge(const std::vector<uint8_t> &data, const CartridgeHeader &header);
+    Cartridge(std::vector<uint8_t> &data, CartridgeHeader &header);
     CartridgeHeader      _header;
     std::vector<uint8_t> _rom;
     std::vector<uint8_t> _ram;
@@ -48,16 +48,16 @@ protected:
 
 class MBC1 : public Cartridge {
 public:
-    MBC1(const std::vector<uint8_t> &data, const CartridgeHeader &header);
-    virtual ~MBC1();
+    MBC1(std::vector<uint8_t> &data, CartridgeHeader &header);
+    ~MBC1() override;
 
-    virtual void    write(const uint16_t &addr, uint8_t data);
-    virtual uint8_t read(const uint16_t &addr) const;
+    void    write(const uint16_t &addr, uint8_t data) override;
+    uint8_t read(const uint16_t &addr) const override;
 
     BankMode _mode              = BankMode::ROM;
     bool     _ram_enabled       = false;
     uint8_t  _selected_rom_bank = 1;
-    uint8_t  _selected_ram_bank = 1;
+    uint8_t  _selected_ram_bank = 0;
     uint8_t  _ram_bank_count    = 0;
     uint8_t  _rom_bank_count    = 0;
     uint8_t  _lower             = 1;
@@ -66,29 +66,29 @@ public:
 
 class MBC2 : public Cartridge {
 public:
-    MBC2(const std::vector<uint8_t> &data, const CartridgeHeader &header);
-    virtual ~MBC2();
+    MBC2(std::vector<uint8_t> &data, CartridgeHeader &header);
+    ~MBC2() override;
 
-    virtual void    write(const uint16_t &addr, uint8_t data);
-    virtual uint8_t read(const uint16_t &addr) const;
+    void    write(const uint16_t &addr, uint8_t data) override;
+    uint8_t read(const uint16_t &addr) const override;
 };
 
 class MBC3 : public Cartridge {
 public:
-    MBC3(const std::vector<uint8_t> &data, const CartridgeHeader &header);
-    virtual ~MBC3();
+    MBC3(std::vector<uint8_t> &data, CartridgeHeader &header);
+    ~MBC3() override;
 
-    virtual void    write(const uint16_t &addr, uint8_t data);
-    virtual uint8_t read(const uint16_t &addr) const;
+    void    write(const uint16_t &addr, uint8_t data) override;
+    uint8_t read(const uint16_t &addr) const override;
 };
 
 class MBC5 : public Cartridge {
 public:
-    MBC5(const std::vector<uint8_t> &data, const CartridgeHeader &header);
-    virtual ~MBC5();
+    MBC5(std::vector<uint8_t> &data, CartridgeHeader &header);
+    ~MBC5() override;
 
-    virtual void    write(const uint16_t &addr, uint8_t data);
-    virtual uint8_t read(const uint16_t &addr) const;
+    void    write(const uint16_t &addr, uint8_t data) override;
+    uint8_t read(const uint16_t &addr) const override;
 };
 
 namespace MBC1_range {
