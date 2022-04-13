@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/13 23:49:51 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/14 01:30:34 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,14 +218,16 @@ void Cpu::instr_ld(Reg::Word &dst, const Reg::BytePair &src) { dst.set(src.get()
  * @brief      Put SP + n (immediate value) effective address into HL.
  */
 void Cpu::instr_ld_hl_sp_n() {
-    uint8_t n = Cpu::read(pc.get());
+    uint16_t val_sp = sp.get();
+    uint8_t  n      = Cpu::read(pc.get());
     pc.inc();
-    hl.set(sp.get() + n);
+
+    uint32_t result = static_cast<uint32_t>(val_sp + n);
+    hl.set(static_cast<uint16_t>(result));
     f.set_zero(false);
     f.set_sub(false);
-    // HACK: needs research
-    f.set_half_carry(false); // check behaviour
-    f.set_carry(false);      // check behaviour
+    f.set_half_carry(((val_sp ^ n ^ (result & 0xFFFF)) & 0x10) == 0x10);
+    f.set_carry(((val_sp ^ n ^ (result & 0xFFFF)) & 0x100) == 0x100);
 };
 
 /**
