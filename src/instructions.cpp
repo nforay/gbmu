@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/17 18:32:53 by nforay            #+#    #+#             */
-/*   Updated: 2022/04/14 01:30:34 by nforay           ###   ########.fr       */
+/*   Updated: 2022/04/14 01:42:54 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,10 +219,10 @@ void Cpu::instr_ld(Reg::Word &dst, const Reg::BytePair &src) { dst.set(src.get()
  */
 void Cpu::instr_ld_hl_sp_n() {
     uint16_t val_sp = sp.get();
-    uint8_t  n      = Cpu::read(pc.get());
+    int8_t   n      = static_cast<int8_t>(Cpu::read(pc.get()));
     pc.inc();
 
-    uint32_t result = static_cast<uint32_t>(val_sp + n);
+    int32_t result = static_cast<int32_t>(val_sp + n);
     hl.set(static_cast<uint16_t>(result));
     f.set_zero(false);
     f.set_sub(false);
@@ -630,13 +630,16 @@ void Cpu::instr_add_hl(const Reg::Word &src) {
  * @brief      Add one byte signed immediate value to Stack Pointer (SP).
  */
 void Cpu::instr_add_sp_n() {
-    uint32_t value = sp.get() + read(pc.get());
+    uint16_t val_sp = sp.get();
+    int8_t   n      = static_cast<int8_t>(Cpu::read(pc.get()));
     pc.inc();
+
+    int32_t result = static_cast<int32_t>(val_sp + n);
+    sp.set(static_cast<uint16_t>(result));
     f.set_zero(false);
     f.set_sub(false);
-    f.set_half_carry(false); // TODO: needs reasearch
-    f.set_carry(false);      // TODO: needs reasearch
-    sp.set(value & 0xFFFF);
+    f.set_half_carry(((val_sp ^ n ^ (result & 0xFFFF)) & 0x10) == 0x10);
+    f.set_carry(((val_sp ^ n ^ (result & 0xFFFF)) & 0x100) == 0x100);
 };
 
 /**
